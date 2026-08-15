@@ -11,7 +11,6 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const input = url.searchParams.get("q")?.trim() ?? "";
-  const sessionToken = url.searchParams.get("session")?.trim() || undefined;
 
   if (!isMapsConfigured()) {
     return Response.json({ suggestions: [], configured: false });
@@ -22,7 +21,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const suggestions = await autocompleteAddress(input, sessionToken);
+    const suggestions = await autocompleteAddress(input);
     return Response.json({ suggestions, configured: true });
   } catch (error) {
     console.error("Autocomplete request failed", error);

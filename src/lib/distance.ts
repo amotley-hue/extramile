@@ -64,7 +64,6 @@ interface GooglePrediction {
  */
 export async function autocompleteAddress(
   input: string,
-  sessionToken?: string,
 ): Promise<PlaceSuggestion[]> {
   const key = mapsApiKey();
   if (!key || input.trim().length < 3) return [];
@@ -81,7 +80,9 @@ export async function autocompleteAddress(
       locationBias: {
         circle: { center: ATLANTA_CENTER, radius: BIAS_RADIUS_METERS },
       },
-      ...(sessionToken ? { sessionToken } : {}),
+      // No sessionToken: those exist to bundle autocomplete calls with a
+      // Place Details call for billing, and we never call Place Details —
+      // the placeId goes straight to the Routes API, a separate product.
     }),
     // Suggestions are per-keystroke and user-specific; never cache them.
     cache: "no-store",

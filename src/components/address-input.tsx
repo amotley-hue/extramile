@@ -30,7 +30,6 @@ export function AddressInput({
   onChange,
   placeholder,
   error,
-  sessionToken,
   required,
 }: {
   label: string;
@@ -38,7 +37,6 @@ export function AddressInput({
   onChange: (value: PlaceValue) => void;
   placeholder?: string;
   error?: string;
-  sessionToken: string;
   required?: boolean;
 }) {
   const id = useId();
@@ -59,18 +57,17 @@ export function AddressInput({
       return;
     }
 
+    // Clearing on a too-short query happens in onChange, not here — resetting
+    // state from inside an effect causes a second render pass for every
+    // keystroke.
     const query = value.address.trim();
-    if (query.length < 3) {
-      setSuggestions([]);
-      setOpen(false);
-      return;
-    }
+    if (query.length < 3) return;
 
     const controller = new AbortController();
     const timer = setTimeout(async () => {
       try {
         const response = await fetch(
-          `/api/places?q=${encodeURIComponent(query)}&session=${encodeURIComponent(sessionToken)}`,
+          `/api/places?q=${encodeURIComponent(query)}`,
           { signal: controller.signal },
         );
         if (!response.ok) return;
@@ -87,7 +84,7 @@ export function AddressInput({
       clearTimeout(timer);
       controller.abort();
     };
-  }, [value.address, sessionToken]);
+  }, [value.address]);
 
   useEffect(() => {
     const onPointerDown = (event: PointerEvent) => {
@@ -156,10 +153,15 @@ export function AddressInput({
           required={required}
           value={value.address}
           placeholder={placeholder}
-          onChange={(event) =>
+          onChange={(event) => {
+            const next = event.target.value;
             // Typing invalidates the previously selected place.
-            onChange({ address: event.target.value })
-          }
+            onChange({ address: next });
+            if (next.trim().length < 3) {
+              setSuggestions([]);
+              setOpen(false);
+            }
+          }}
           onKeyDown={onKeyDown}
           onFocus={() => suggestions.length > 0 && setOpen(true)}
           className={cn(

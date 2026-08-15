@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Extra Mile Limousine Service
 
-## Getting Started
+Marketing site and booking funnel for an owner-operated luxury chauffeur service
+in Atlanta, Georgia. Owner: Craig Mason, 678-457-0698.
 
-First, run the development server:
+**Going live?** Follow [`LAUNCH.md`](./LAUNCH.md) — domain, email, hosting, keys,
+and Google Business Profile, in order.
+
+**Changing prices?** [`src/lib/rates.ts`](./src/lib/rates.ts) is the only file
+you need. Every number in it is currently a placeholder.
+
+---
+
+## Why it's built this way
+
+Both competitor sites (`theblackfleetatl.com`, `bsbexecutivetransportation.org`)
+hand booking off to a third-party portal, and neither publishes a price. So the
+two things this site does differently are the two things that were missing:
+
+1. **The whole funnel stays on the site.** Quote to request, no redirect, no
+   account, no card.
+2. **A real number, up front.** Address to address, priced against a rate card,
+   with the breakdown shown — fare, fees, gratuity, total.
+
+Everything else is deliberately absent. There's no customer login, no admin
+dashboard, no live tracking, no flight API. Each was considered and cut because
+it adds a thing to maintain without making it faster for a customer to book, or
+easier for Craig to run his day out of his phone.
+
+## Stack
+
+| | |
+| --- | --- |
+| Framework | Next.js 16 (App Router, Turbopack) |
+| Language | TypeScript, strict |
+| Styling | Tailwind CSS 4 (CSS-first theming in `globals.css`) |
+| Validation | Zod 4 |
+| Email | Resend |
+| Database | Supabase (booking request log only) |
+| Maps | Google Places API (New) + Routes API |
+| Tests | Vitest |
+| Hosting | Vercel |
+
+## Running it
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in what you have; all of it is optional
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The site runs with **no environment variables at all**. Without a Maps key the
+quote step degrades to a request form that says so plainly, rather than guessing
+a distance — a wrong price is worse than no price.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run dev        # dev server on :3000
+npm run build      # production build
+npm test           # pricing engine tests
+npm run typecheck  # generate route types, then tsc
+npm run check      # typecheck + lint + test
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Layout
 
-## Learn More
+```
+src/
+  app/
+    page.tsx              Home
+    book/                 Quote + booking funnel
+    services/ fleet/ about/ faq/ contact/
+    api/
+      places/route.ts     Address autocomplete proxy (keeps the Maps key server-side)
+      quote/route.ts      Prices every vehicle for a trip
+      booking/route.ts    Re-prices server-side, persists, emails
+    sitemap.ts robots.ts
+  components/
+    booking-flow.tsx      The three-step funnel
+    address-input.tsx     Places autocomplete combobox
+    site-header.tsx site-footer.tsx backdrop.tsx ui.tsx
+    local-business-schema.tsx
+  lib/
+    business.ts           Name, phone, service area — single source of truth
+    rates.ts              THE RATE CARD
+    quote.ts              Pricing engine (pure functions)
+    distance.ts           Google Maps integration
+    validation.ts         Zod schemas
+    notify.ts             Booking emails
+    store.ts              Supabase persistence
+    ratelimit.ts          Per-IP throttling on metered endpoints
+supabase/schema.sql       Run once in the Supabase SQL editor
+public/images/README.md   What photos to shoot and where they go
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Notes for whoever works on this next
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **`business.ts` and `rates.ts` are the config surface.** Phone number, service
+  areas, vehicles, and prices all live there. Changing a phone number should
+  never mean grepping through JSX.
+- **The pricing engine is pure.** `calculateQuote()` does arithmetic and nothing
+  else — no I/O, no `process.env`, no `Date.now()`. That's what makes it
+  testable and what makes the server and client agree.
+- **Prices are recalculated server-side on submit.** The number the browser
+  posts is treated as display only. A posted price is an offer from the
+  customer, not a rate Craig agreed to.
+- **The Maps key never reaches the browser.** Both Google APIs are called from
+  route handlers. That's also why the key has no application restriction — there
+  is no referrer to restrict against, so its secrecy is the control.
+- **A booking is written to Supabase before email is trusted**, and if neither
+  the record nor Craig's notification lands, the customer is told to call rather
+  than shown a false confirmation.
+- **The tests assert rule shape, not dollar amounts** — minimums bind, bigger
+  vehicles cost more, gratuity is computed on the subtotal — so they survive the
+  real rate card replacing the placeholders.
+- **No testimonials, no review counts, no years-in-business claims** anywhere on
+  the site. Nothing was invented. Add them when they're real; `about/page.tsx`
+  has a `TODO(craig)` marking exactly what's still needed.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Private and proprietary. © The Extra Mile Limousine Service LLC.

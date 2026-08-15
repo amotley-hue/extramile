@@ -19,6 +19,15 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [lastPathname, setLastPathname] = useState(pathname);
+
+  // Close the drawer whenever the route changes. Adjusting state during render
+  // is React's documented pattern for this — an effect would paint the new page
+  // with the menu still covering it for a frame.
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname);
+    setOpen(false);
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -26,9 +35,6 @@ export function SiteHeader() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  // Close the drawer whenever the route changes.
-  useEffect(() => setOpen(false), [pathname]);
 
   // Prevent the page behind the drawer from scrolling.
   useEffect(() => {

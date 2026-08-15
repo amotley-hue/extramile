@@ -27,7 +27,6 @@ export const tripSchema = z
     hours: z.number().int().min(1).max(24).optional(),
     extraStops: z.number().int().min(0).max(10).default(0),
     meetAndGreet: z.boolean().default(false),
-    sessionToken: z.string().max(100).optional(),
   })
   .refine((data) => data.tripType !== "transfer" || data.dropoff !== undefined, {
     message: "Enter a dropoff address.",

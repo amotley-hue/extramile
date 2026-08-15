@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import {
   ArrowLeft,
   Check,
@@ -130,14 +130,7 @@ export function BookingFlow() {
     emailed: boolean;
   } | null>(null);
 
-  const minDateTime = useMemo(nextHourLocal, []);
-  const sessionToken = useMemo(
-    () =>
-      typeof crypto !== "undefined" && "randomUUID" in crypto
-        ? crypto.randomUUID()
-        : Math.random().toString(36).slice(2),
-    [],
-  );
+  const minDateTime = useMemo(() => nextHourLocal(), []);
 
   const isAirportTrip =
     Boolean(pickup.isAirport) ||
@@ -146,10 +139,10 @@ export function BookingFlow() {
       `${pickup.address} ${dropoff.address}`,
     );
 
-  // Meet & greet only makes sense on an airport arrival.
-  useEffect(() => {
-    if (!isAirportTrip && meetAndGreet) setMeetAndGreet(false);
-  }, [isAirportTrip, meetAndGreet]);
+  // Meet & greet only exists on airport trips. Derived rather than reset in an
+  // effect, so a customer who ticks it and then edits the trip into a
+  // non-airport one simply stops being charged for it.
+  const wantsMeetAndGreet = isAirportTrip && meetAndGreet;
 
   const selectedQuote =
     result?.quotes.find((q) => q.vehicleId === vehicleId) ?? null;
@@ -182,8 +175,7 @@ export function BookingFlow() {
           pickupAt,
           hours: tripType === "hourly" ? hours : undefined,
           extraStops,
-          meetAndGreet,
-          sessionToken,
+          meetAndGreet: wantsMeetAndGreet,
         }),
       });
 
@@ -238,7 +230,7 @@ export function BookingFlow() {
             pickupAt,
             hours: tripType === "hourly" ? hours : undefined,
             extraStops,
-            meetAndGreet,
+            meetAndGreet: wantsMeetAndGreet,
           },
           name,
           email,
@@ -414,7 +406,6 @@ export function BookingFlow() {
               onChange={setPickup}
               placeholder="Address, hotel, or airport terminal"
               error={errors.pickup}
-              sessionToken={sessionToken}
               required
             />
 
@@ -425,7 +416,6 @@ export function BookingFlow() {
                 onChange={setDropoff}
                 placeholder="Where are you headed?"
                 error={errors.dropoff}
-                sessionToken={sessionToken}
                 required
               />
             ) : (

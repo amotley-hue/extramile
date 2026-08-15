@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ArrowRight, Phone } from "lucide-react";
-import { ButtonLink, Section, SectionHeading } from "@/components/ui";
+import { ButtonLink, Section } from "@/components/ui";
 import { business } from "@/lib/business";
 import { cancellationPolicy, vehicles, waitTimePolicy } from "@/lib/rates";
 
