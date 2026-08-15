@@ -36,6 +36,80 @@ const METRO_BBOX = "-85.6,32.9,-83.2,34.6";
 
 const METERS_PER_MILE = 1609.344;
 
+/** Craig operates on Atlanta time; every pickup time the site collects is local. */
+const OPERATING_TIMEZONE = "America/New_York";
+
+/**
+ * The UTC offset Atlanta is on at a given local wall-clock time, as "-04:00"
+ * or "-05:00".
+ *
+ * Mapbox accepts a bare `YYYY-MM-DDThh:mm` for `depart_at`, but nothing in the
+ * format says which zone it is in. Sending an explicit offset removes the
+ * guess. Getting this wrong is not cosmetic: reading a 2pm Atlanta pickup as
+ * 2pm UTC would price it against 9am rush-hour traffic, and with drive time on
+ * the meter that is real money on every afternoon trip.
+ *
+ * Derived from the IANA database via Intl rather than hardcoded, so it stays
+ * correct across daylight saving and any future rule change.
+ */
+export function timezoneOffsetFor(localDateTime: string): string | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(
+    localDateTime.trim(),
+  );
+  if (!match) return null;
+
+  const [, y, mo, d, h, mi] = match.map(Number) as unknown as number[];
+
+  // Offset in minutes that `timeZone` is from UTC at a given instant.
+  const offsetAt = (instant: Date): number => {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: OPERATING_TIMEZONE,
+      hourCycle: "h23",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    }).formatToParts(instant);
+
+    const get = (type: string) =>
+      Number(parts.find((p) => p.type === type)?.value ?? "0");
+
+    const asIfUtc = Date.UTC(
+      get("year"),
+      get("month") - 1,
+      get("day"),
+      get("hour"),
+      get("minute"),
+      get("second"),
+    );
+
+    return (asIfUtc - instant.getTime()) / 60_000;
+  };
+
+  // Treat the wall time as UTC, measure the offset there, then correct. One
+  // refinement pass settles it except exactly inside a DST transition, where
+  // either answer is defensible.
+  const naive = Date.UTC(y!, mo! - 1, d!, h!, mi!);
+  let offset = offsetAt(new Date(naive));
+  offset = offsetAt(new Date(naive - offset * 60_000));
+
+  const sign = offset >= 0 ? "+" : "-";
+  const abs = Math.abs(offset);
+  const pad = (n: number) => String(Math.floor(n)).padStart(2, "0");
+
+  return `${sign}${pad(abs / 60)}:${pad(abs % 60)}`;
+}
+
+/** Turns a local pickup time into an unambiguous ISO 8601 instant for Mapbox. */
+export function departAtParam(localDateTime: string | undefined): string | null {
+  if (!localDateTime) return null;
+  const offset = timezoneOffsetFor(localDateTime);
+  if (!offset) return null;
+  return `${localDateTime.trim()}:00${offset}`;
+}
+
 export function mapboxToken(): string | undefined {
   const token = process.env.MAPBOX_ACCESS_TOKEN?.trim();
   return token ? token : undefined;
@@ -317,8 +391,11 @@ export interface RouteResult {
 /**
  * Driving distance and time between two coordinate pairs.
  *
- * `departAt` is a local `YYYY-MM-DDTHH:mm` string, interpreted by Mapbox as
- * local time at the route origin — which is what we have and what we want.
+ * `departAt` is the local `YYYY-MM-DDTHH:mm` pickup time; it is converted to an
+ * explicit-offset ISO instant before being sent. On the driving-traffic profile
+ * Mapbox blends live traffic with historical patterns, so a pickup three weeks
+ * out is priced against what that road is typically like at that hour.
+ *
  * Because drive time is billed, quoting traffic for the actual pickup time
  * rather than for right now is the difference between charging correctly for a
  * rush-hour airport run and under-charging it.
@@ -333,13 +410,17 @@ export async function computeDrivingRoute(
 
   const pair = `${origin.lon},${origin.lat};${destination.lon},${destination.lat}`;
 
+  const departAtIso = departAtParam(departAt);
+
   const build = (withDepartAt: boolean) => {
     const url = new URL(`${DIRECTIONS_URL}/${pair}`);
     url.searchParams.set("access_token", token);
     // We only need the numbers, so skip the geometry entirely.
     url.searchParams.set("overview", "false");
     url.searchParams.set("alternatives", "false");
-    if (withDepartAt && departAt) url.searchParams.set("depart_at", departAt);
+    if (withDepartAt && departAtIso) {
+      url.searchParams.set("depart_at", departAtIso);
+    }
     return url;
   };
 
@@ -348,7 +429,7 @@ export async function computeDrivingRoute(
   // Mapbox rejects depart_at that is in the past or too far ahead. A pickup
   // three months out should still get a quote, just without traffic for that
   // exact moment, so retry once without it rather than failing the quote.
-  if (!response.ok && departAt) {
+  if (!response.ok && departAtIso) {
     console.warn(
       "Directions rejected depart_at; retrying without it",
       response.status,
