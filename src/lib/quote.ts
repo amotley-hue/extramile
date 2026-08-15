@@ -6,18 +6,12 @@
  * does arithmetic.
  */
 
-import {
-  getVehicle,
-  surcharges,
-  type VehicleId,
-  quoteDisclaimer,
-} from "./rates";
+import { quoteDisclaimer, surcharges, vehicle } from "./rates";
 
 export type TripType = "transfer" | "hourly";
 
 export interface QuoteInput {
   tripType: TripType;
-  vehicleId: VehicleId;
   /** Driving distance in miles. Required for `transfer`. */
   miles?: number;
   /** Charter duration in hours. Required for `hourly`. */
@@ -42,7 +36,6 @@ export interface QuoteLine {
 }
 
 export interface Quote {
-  vehicleId: VehicleId;
   vehicleName: string;
   tripType: TripType;
   lines: QuoteLine[];
@@ -81,7 +74,6 @@ export function isAfterHours(pickupAt: string | undefined): boolean {
 const round = (n: number) => Math.round(n * 100) / 100;
 
 export function calculateQuote(input: QuoteInput): Quote {
-  const vehicle = getVehicle(input.vehicleId);
   const lines: QuoteLine[] = [];
 
   let billedHours: number | undefined;
@@ -91,7 +83,7 @@ export function calculateQuote(input: QuoteInput): Quote {
     const requested = Math.max(0, input.hours ?? 0);
     billedHours = Math.max(requested, vehicle.minimumHours);
     lines.push({
-      label: `${vehicle.name} — ${billedHours} hour${billedHours === 1 ? "" : "s"}`,
+      label: `Chauffeured hourly — ${billedHours} hour${billedHours === 1 ? "" : "s"}`,
       amount: round(vehicle.hourlyRate * billedHours),
       note:
         billedHours > requested
@@ -103,7 +95,7 @@ export function calculateQuote(input: QuoteInput): Quote {
     const metered = vehicle.baseFare + vehicle.perMileRate * miles;
     const fare = Math.max(vehicle.minimumFare, metered);
     lines.push({
-      label: `${vehicle.name} — ${miles.toFixed(1)} mi`,
+      label: `Chauffeured transfer — ${miles.toFixed(1)} mi`,
       amount: round(fare),
       note:
         fare > metered
@@ -147,7 +139,6 @@ export function calculateQuote(input: QuoteInput): Quote {
   const total = round(subtotal + gratuity);
 
   return {
-    vehicleId: vehicle.id,
     vehicleName: vehicle.name,
     tripType: input.tripType,
     lines,

@@ -1,5 +1,5 @@
 import { airports, business, serviceAreas } from "@/lib/business";
-import { vehicles } from "@/lib/rates";
+import { vehicle, vehicleFullLabel } from "@/lib/rates";
 
 /**
  * LocalBusiness structured data.
@@ -62,12 +62,17 @@ export function LocalBusinessSchema() {
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Chauffeur services",
-      itemListElement: vehicles.map((vehicle) => ({
+      itemListElement: [
+        "Airport transfers",
+        "Corporate travel",
+        "Hourly charter",
+        "Events and special occasions",
+      ].map((name) => ({
         "@type": "Offer",
         itemOffered: {
           "@type": "Service",
-          name: vehicle.name,
-          description: vehicle.blurb,
+          name,
+          description: `${name} in a ${vehicleFullLabel()} seating up to ${vehicle.passengers}, driven by owner ${business.owner}.`,
         },
       })),
     },

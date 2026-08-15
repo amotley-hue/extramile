@@ -1,7 +1,4 @@
 import { z } from "zod";
-import { vehicles, type VehicleId } from "./rates";
-
-const vehicleIds = vehicles.map((v) => v.id) as [VehicleId, ...VehicleId[]];
 
 /** `YYYY-MM-DDTHH:mm` as produced by <input type="datetime-local">. */
 const localDateTime = z
@@ -15,8 +12,8 @@ const place = z.object({
 });
 
 /**
- * A trip, without a vehicle chosen. The quote endpoint prices every vehicle
- * against this so the customer compares real numbers instead of guessing.
+ * A trip. There is one vehicle, so there is nothing to choose — the quote
+ * endpoint prices this directly.
  */
 export const tripSchema = z
   .object({
@@ -42,14 +39,8 @@ export type Trip = z.infer<typeof tripSchema>;
 /** The quote endpoint takes a bare trip. */
 export const quoteRequestSchema = tripSchema;
 
-/** A booking pins down which vehicle the customer chose. */
-export const bookedTripSchema = z.intersection(
-  tripSchema,
-  z.object({ vehicleId: z.enum(vehicleIds) }),
-);
-
 export const bookingRequestSchema = z.object({
-  trip: bookedTripSchema,
+  trip: tripSchema,
 
   name: z.string().trim().min(2, "Enter your name.").max(120),
   email: z.email("Enter a valid email address.").max(200),

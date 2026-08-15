@@ -127,14 +127,15 @@ export function AddressInput({
     <div className="relative" ref={wrapperRef}>
       <label
         htmlFor={id}
-        className="mb-2 block text-xs font-medium uppercase tracking-[0.14em] text-muted"
+        className="mb-2.5 block text-[0.6875rem] font-medium uppercase tracking-[0.2em] text-faint"
       >
         {label}
       </label>
 
       <div className="relative">
         <MapPin
-          className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-brass"
+          className="pointer-events-none absolute left-0 top-1/2 size-4 -translate-y-1/2 text-brass"
+          strokeWidth={1.5}
           aria-hidden
         />
         <input
@@ -165,16 +166,16 @@ export function AddressInput({
           onKeyDown={onKeyDown}
           onFocus={() => suggestions.length > 0 && setOpen(true)}
           className={cn(
-            "w-full rounded-xl border bg-ink-3 py-4 pl-11 pr-4 text-[15px] text-cream placeholder:text-faint transition-colors",
+            "w-full border-0 border-b bg-transparent py-3.5 pl-7 pr-0 text-[15px] text-cream placeholder:text-faint/70 transition-colors focus:ring-0",
             error
-              ? "border-red-500/60"
-              : "border-line hover:border-line-strong focus:border-brass",
+              ? "border-red-400/70"
+              : "border-line-strong hover:border-brass/50 focus:border-brass",
           )}
         />
       </div>
 
       {error ? (
-        <p id={errorId} className="mt-2 text-sm text-red-400">
+        <p id={errorId} className="mt-2.5 text-sm text-red-300">
           {error}
         </p>
       ) : null}
@@ -184,7 +185,7 @@ export function AddressInput({
           id={listId}
           role="listbox"
           aria-label={`${label} suggestions`}
-          className="absolute z-30 mt-2 max-h-72 w-full overflow-auto rounded-xl border border-line-strong bg-ink-2 py-1.5 shadow-2xl shadow-black/60"
+          className="absolute z-30 mt-1 max-h-72 w-full overflow-auto border border-line-strong bg-ink-raise/95 py-1.5 shadow-2xl shadow-black/70 backdrop-blur-xl"
         >
           {suggestions.map((suggestion, index) => (
             <li
@@ -198,8 +199,10 @@ export function AddressInput({
               }}
               onMouseEnter={() => setActive(index)}
               className={cn(
-                "cursor-pointer px-4 py-3 text-sm",
-                index === active ? "bg-ink-3" : "",
+                "cursor-pointer border-l-2 px-4 py-3 text-sm transition-colors",
+                index === active
+                  ? "border-brass bg-white/[0.04]"
+                  : "border-transparent",
               )}
             >
               <span className="block text-cream">{suggestion.primary}</span>

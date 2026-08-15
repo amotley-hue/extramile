@@ -18,7 +18,9 @@ create table if not exists public.booking_requests (
 
   -- Trip
   trip_type     text not null check (trip_type in ('transfer', 'hourly')),
-  vehicle_id    text not null,
+  -- Stored per booking rather than assumed. Craig runs one vehicle today; if
+  -- that ever changes, past requests still say what was actually quoted.
+  vehicle_name  text,
   pickup_address   text not null,
   pickup_place_id  text,
   dropoff_address  text,

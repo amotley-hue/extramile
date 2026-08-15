@@ -10,7 +10,7 @@ const columns = [
       { href: "/services#corporate", label: "Corporate travel" },
       { href: "/services#hourly", label: "Hourly charter" },
       { href: "/services#events", label: "Events & occasions" },
-      { href: "/fleet", label: "The fleet" },
+      { href: "/vehicle", label: "The car" },
     ],
   },
   {
@@ -28,7 +28,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-line bg-ink-2">
+    <footer className="seam relative bg-ink-sink">
       <div className="container-page py-16 md:py-20">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>

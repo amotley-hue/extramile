@@ -3,14 +3,13 @@
  *  RATE CARD  —  CRAIG: THIS IS THE ONLY FILE YOU NEED TO EDIT TO CHANGE PRICES
  * ============================================================================
  *
- *  >>> EVERY NUMBER BELOW IS A PLACEHOLDER. <<<
+ *  >>> EVERY PRICE BELOW IS A PLACEHOLDER. <<<
  *
- *  These are benchmarked against typical metro-Atlanta black-car pricing so the
- *  site is demonstrable end to end, but they are NOT your rates. Replace them
- *  before the site goes live, or the quote tool will quote prices you cannot
- *  honor. Nothing else in the codebase needs to change when you edit this file.
+ *  Benchmarked against typical metro-Atlanta black-car pricing so the site is
+ *  demonstrable end to end, but these are NOT your rates. Replace them before
+ *  the site goes live, or the quote tool will quote prices you cannot honor.
  *
- *  The quote formula, per vehicle:
+ *  The quote formula:
  *
  *      fare      = max(minimumFare, baseFare + perMileRate x miles)
  *      subtotal  = fare + airportFee? + afterHoursFee? + stops + meetAndGreet?
@@ -20,18 +19,23 @@
  *  same surcharges and gratuity.
  */
 
-export type VehicleId = "sedan" | "suv" | "sprinter";
-
 export interface Vehicle {
-  id: VehicleId;
+  /** What the site calls it. */
   name: string;
-  /** Example models. Update to match the actual fleet. */
-  examples: string;
+  /**
+   * The actual make and model, e.g. "Cadillac Escalade".
+   *
+   * TODO(craig): fill this in. Left empty on purpose — every place the site
+   * shows the vehicle falls back to the generic name when this is blank, so an
+   * empty string is honest and a guess would not be. Naming the specific
+   * vehicle is worth doing: it is what makes the price feel earned rather than
+   * asserted.
+   */
+  model: string;
   /** Seated passengers, excluding the chauffeur. */
   passengers: number;
   /** Large checked bags that fit comfortably. */
   luggage: number;
-  blurb: string;
   features: string[];
 
   // ---- Pricing ----
@@ -47,70 +51,45 @@ export interface Vehicle {
   minimumHours: number;
 }
 
-export const vehicles: Vehicle[] = [
-  {
-    id: "sedan",
-    name: "Luxury Sedan",
-    examples: "Cadillac XTS · Lincoln Continental · Mercedes E-Class",
-    passengers: 3,
-    luggage: 3,
-    blurb:
-      "The everyday standard. Ideal for airport runs, client meetings, and a quiet hour to yourself between stops.",
-    features: [
-      "Leather interior",
-      "Rear climate control",
-      "Phone chargers",
-      "Bottled water",
-    ],
-    baseFare: 45,
-    perMileRate: 2.75,
-    minimumFare: 75,
-    hourlyRate: 85,
-    minimumHours: 2,
-  },
-  {
-    id: "suv",
-    name: "Premium SUV",
-    examples: "Cadillac Escalade · Chevrolet Suburban · Lincoln Navigator",
-    passengers: 6,
-    luggage: 6,
-    blurb:
-      "Room for the family, the golf clubs, or the whole deal team. The most requested vehicle for ATL arrivals.",
-    features: [
-      "Captain's chairs",
-      "Rear climate control",
-      "Phone chargers",
-      "Bottled water",
-      "Extended luggage space",
-    ],
-    baseFare: 65,
-    perMileRate: 3.5,
-    minimumFare: 105,
-    hourlyRate: 110,
-    minimumHours: 2,
-  },
-  {
-    id: "sprinter",
-    name: "Executive Sprinter",
-    examples: "Mercedes-Benz Sprinter Executive",
-    passengers: 12,
-    luggage: 12,
-    blurb:
-      "Move a group without splitting it up. Corporate roadshows, wedding parties, and airport groups travel together.",
-    features: [
-      "Executive seating",
-      "Standing headroom",
-      "Onboard power",
-      "Bottled water",
-      "Rear luggage bay",
-    ],
-    baseFare: 110,
-    perMileRate: 4.5,
-    minimumFare: 195,
-    hourlyRate: 155,
-    minimumHours: 3,
-  },
-];
+/**
+ * Craig runs a single vehicle. That is a feature, not a limitation — one car
+ * means one standard, and the site says so rather than implying a fleet.
+ *
+ * If a second vehicle is ever added, this becomes an array and the booking flow
+ * gains a selection step back. Until then, nothing on the site asks the
+ * customer to choose.
+ */
+export const vehicle: Vehicle = {
+  name: "Luxury SUV",
+  model: "",
+  passengers: 6,
+  luggage: 6,
+  features: [
+    "Full-grain leather seating",
+    "Rear climate control",
+    "Wireless and wired charging",
+    "Chilled bottled water",
+    "Extended luggage space",
+    "Privacy glass",
+  ],
+
+  baseFare: 65,
+  perMileRate: 3.5,
+  minimumFare: 105,
+  hourlyRate: 110,
+  minimumHours: 2,
+};
+
+/** "Luxury SUV" when no model is set, "Cadillac Escalade" when it is. */
+export function vehicleLabel(): string {
+  return vehicle.model.trim() || vehicle.name;
+}
+
+/** "Luxury SUV" / "Luxury SUV · Cadillac Escalade" for places that show both. */
+export function vehicleFullLabel(): string {
+  const model = vehicle.model.trim();
+  return model ? `${vehicle.name} · ${model}` : vehicle.name;
+}
 
 export const surcharges = {
   /** Added to any trip that starts or ends at a commercial airport. */
@@ -155,9 +134,3 @@ export const waitTimePolicy = {
 
 export const cancellationPolicy =
   "Cancel at no charge up to 24 hours before pickup. Inside 24 hours, 50% of the fare is charged. No-shows are charged in full.";
-
-export function getVehicle(id: VehicleId): Vehicle {
-  const vehicle = vehicles.find((v) => v.id === id);
-  if (!vehicle) throw new Error(`Unknown vehicle: ${id}`);
-  return vehicle;
-}

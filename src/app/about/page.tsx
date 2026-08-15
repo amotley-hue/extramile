@@ -43,36 +43,37 @@ const principles = [
 export default function AboutPage() {
   return (
     <>
-      <Section className="border-b border-line bg-ink-2/40 !py-16 md:!py-24">
+      <Section className="!pb-16 !pt-24 md:!pt-32">
         <div className="container-page">
           <div className="reveal max-w-3xl">
-            <p className="eyebrow mb-5">About</p>
-            <h1 className="text-[2.5rem] leading-[1.08] md:text-[3.5rem]">
-              One name on the door.
+            <p className="eyebrow mb-7">About</p>
+            <h1 className="display-xl text-[3rem] md:text-[4.5rem]">
+              One name
+              <span className="block italic text-brass">on the door.</span>
             </h1>
           </div>
         </div>
       </Section>
 
-      <Section className="border-t border-line">
+      <Section className="!pt-8">
         <div className="container-page">
           <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
             <div className="reveal">
               {/* Headshot slot — see public/images/README.md. */}
-              <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-2xl border border-line bg-ink-3">
+              <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden">
                 <div
-                  className="absolute inset-0 opacity-[0.16] blur-3xl"
+                  className="absolute inset-0"
                   style={{
                     background:
-                      "radial-gradient(circle at 50% 40%, var(--brass) 0%, transparent 62%)",
+                      "radial-gradient(ellipse 65% 55% at 50% 42%, rgb(194 161 92 / 0.26) 0%, transparent 66%)",
                   }}
                   aria-hidden
                 />
-                <p className="relative text-center font-display text-2xl text-cream/25">
+                <p className="relative text-center font-display text-2xl font-light italic text-cream/20">
                   {business.owner}
                 </p>
               </div>
-              <p className="mt-5 text-xs leading-relaxed text-faint">
+              <p className="mt-6 text-[0.6875rem] uppercase tracking-[0.2em] text-faint">
                 {business.owner} — {business.ownerRole}
               </p>
             </div>
@@ -108,37 +109,35 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              <div className="reveal mt-10 rounded-2xl border border-line bg-ink-2 p-7">
-                <p className="font-display text-xl leading-relaxed text-cream">
+              <blockquote className="reveal mt-14 border-l border-brass/40 pl-8">
+                <p className="font-display text-[1.75rem] font-light italic leading-snug text-cream">
                   &ldquo;Anybody can get you there. I&rsquo;d rather you never
                   had to think about how.&rdquo;
                 </p>
-                <p className="mt-4 text-xs uppercase tracking-[0.16em] text-brass">
+                <footer className="mt-5 text-[0.6875rem] uppercase tracking-[0.2em] text-brass">
                   {business.owner}
-                </p>
-              </div>
+                </footer>
+              </blockquote>
             </div>
           </div>
         </div>
       </Section>
 
-      <Section className="border-t border-line bg-ink-2">
+      <Section className="seam">
         <div className="container-page">
           <SectionHeading
             eyebrow="How it's run"
             title="Four rules, held to."
             align="center"
           />
-          <div className="mt-14 grid gap-10 sm:grid-cols-2">
+          <div className="mt-20 grid gap-x-16 gap-y-14 sm:grid-cols-2">
             {principles.map((principle) => (
-              <div
-                key={principle.title}
-                className="reveal rounded-2xl border border-line bg-ink p-8"
-              >
-                <h3 className="font-display text-2xl text-cream">
+              <div key={principle.title} className="reveal">
+                <div className="rule mb-7" />
+                <h3 className="font-display text-[1.75rem] font-light text-cream">
                   {principle.title}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted">
+                <p className="mt-4 text-sm leading-[1.75] text-muted">
                   {principle.body}
                 </p>
               </div>
@@ -147,24 +146,29 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      <Section className="border-t border-line">
+      <Section className="seam !pb-44">
         <div className="container-page text-center">
-          <h2 className="reveal mx-auto max-w-xl text-[2rem] leading-[1.15] md:text-4xl">
-            Try it once. You&rsquo;ll understand the name.
+          <h2 className="reveal display-xl mx-auto max-w-2xl text-[2.5rem] md:text-[3.5rem]">
+            Try it once. You&rsquo;ll
+            <span className="block italic text-brass">
+              understand the name.
+            </span>
           </h2>
-          <div className="reveal mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-            <ButtonLink href="/book" className="px-9 py-4 text-base">
+          <div className="reveal mt-14 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-10">
+            <ButtonLink href="/book">
               Get an instant quote
-              <ArrowRight className="size-4" aria-hidden />
+              <ArrowRight
+                className="size-4 transition-transform duration-300 group-hover:translate-x-1"
+                aria-hidden
+              />
             </ButtonLink>
-            <ButtonLink
+            <a
               href={`tel:${business.phoneHref}`}
-              variant="outline"
-              className="px-9 py-4 text-base"
+              className="inline-flex items-center gap-2.5 text-sm text-muted transition-colors hover:text-cream"
             >
-              <Phone className="size-4" aria-hidden />
+              <Phone className="size-4 text-brass" strokeWidth={1.5} aria-hidden />
               {business.phone}
-            </ButtonLink>
+            </a>
           </div>
         </div>
       </Section>

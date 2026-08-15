@@ -3,33 +3,40 @@
 /*
   Midnight & brass.
 
-  The site commits to a single dark palette rather than following the OS
-  theme — a chauffeur service at 5am reads as a night product, and a
-  half-lit "light mode" version of it would undercut the whole impression.
+  The site commits to a single dark palette rather than following the OS theme —
+  a chauffeur service at 5am reads as a night product.
+
+  The governing idea is that the page is one continuous surface, not a stack of
+  cards. Sections do not own backgrounds and do not end in full-width borders;
+  light bleeds across their boundaries, and a fixed film grain sits over
+  everything so the whole page shares one texture. Boxes are the exception, not
+  the default.
 */
 
 :root {
-  --ink: #0a0c0e; /* page ground */
-  --ink-2: #101418; /* cards, sections */
-  --ink-3: #171d23; /* raised surfaces, inputs */
-  --line: rgb(244 241 234 / 0.1);
-  --line-strong: rgb(244 241 234 / 0.2);
+  --ink: #08090b; /* page ground, near black */
+  --ink-raise: #0e1115; /* the lightest the surface ever gets */
+  --ink-sink: #050607; /* pooled shadow at section seams */
 
-  --cream: #f4f1ea; /* primary text */
-  --muted: #9c968b; /* secondary text */
-  --faint: #6d685f; /* tertiary text, captions */
+  --line: rgb(244 241 234 / 0.075);
+  --line-strong: rgb(244 241 234 / 0.16);
+
+  --cream: #f4f1ea;
+  --muted: #a09a90;
+  --faint: #6f6a61;
 
   --brass: #c2a15c;
-  --brass-bright: #dcc085;
-  --brass-dim: rgb(194 161 92 / 0.14);
+  --brass-bright: #e3cb92;
+  --brass-deep: #8a6d2f;
+  --brass-dim: rgb(194 161 92 / 0.12);
 
   color-scheme: dark;
 }
 
 @theme inline {
   --color-ink: var(--ink);
-  --color-ink-2: var(--ink-2);
-  --color-ink-3: var(--ink-3);
+  --color-ink-raise: var(--ink-raise);
+  --color-ink-sink: var(--ink-sink);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --color-cream: var(--cream);
@@ -37,6 +44,7 @@
   --color-faint: var(--faint);
   --color-brass: var(--brass);
   --color-brass-bright: var(--brass-bright);
+  --color-brass-deep: var(--brass-deep);
   --color-brass-dim: var(--brass-dim);
 
   --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
@@ -46,6 +54,7 @@
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
   }
 
   body {
@@ -53,6 +62,8 @@
     color: var(--cream);
     font-family: var(--font-sans);
     font-feature-settings: "kern", "liga";
+    /* Stops the huge flat dark areas from banding on cheap panels. */
+    text-rendering: optimizeLegibility;
   }
 
   ::selection {
@@ -60,40 +71,72 @@
     color: var(--ink);
   }
 
-  /* A single visible focus treatment everywhere, including inside dark cards. */
   :focus-visible {
-    outline: 2px solid var(--brass-bright);
-    outline-offset: 2px;
-    border-radius: 2px;
+    outline: 1px solid var(--brass-bright);
+    outline-offset: 3px;
+    border-radius: 1px;
   }
 
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.01em;
+    font-weight: 300;
+    letter-spacing: -0.018em;
   }
 }
 
 @layer components {
-  /* Small brass label above a heading. */
   .eyebrow {
     color: var(--brass);
     font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
+    font-weight: 500;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
   }
 
-  .rule {
+  /*
+    A seam, not a border. Fades to nothing at both ends so sections dissolve
+    into each other instead of stacking like panels.
+  */
+  .seam {
+    position: relative;
+  }
+
+  .seam::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
     height: 1px;
     background: linear-gradient(
-      to right,
-      var(--line-strong),
-      transparent 65%
+      90deg,
+      transparent,
+      var(--line-strong) 20%,
+      var(--line-strong) 80%,
+      transparent
     );
+    opacity: 0.7;
   }
+
+  /* Hairline under a heading, weighted to the left like a pen stroke. */
+  .rule {
+    height: 1px;
+    background: linear-gradient(to right, var(--line-strong), transparent 70%);
+  }
+}
+
+/*
+  A soft pool of light rather than a filled panel. Lifts a region off the page
+  without drawing an edge around it.
+*/
+@utility wash {
+  background: radial-gradient(
+    ellipse 130% 120% at 50% 45%,
+    var(--ink-raise) 0%,
+    rgb(14 17 21 / 0.55) 42%,
+    transparent 78%
+  );
 }
 
 @utility container-page {
@@ -107,30 +150,72 @@
   }
 }
 
-/* Scroll reveal. Elements start hidden only when JS is present to reveal
-   them, so no-JS visitors still see everything. */
+/* Display type wants tighter tracking as it gets bigger. */
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.028em;
+  line-height: 1.02;
+}
+
+/*
+  Scroll reveal. Elements start hidden only when JS is present to reveal them,
+  so a no-JS visitor still sees the whole page.
+*/
 .reveal {
   opacity: 1;
 }
 
 [data-js="on"] .reveal {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(26px);
+  filter: blur(6px);
   transition:
-    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-js="on"] .reveal[data-shown="true"] {
   opacity: 1;
   transform: none;
+  filter: none;
+}
+
+/* Very slow drift, so the ambient light is never quite static. */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2%, -3%, 0) scale(1.08);
+  }
+}
+
+.drift {
+  animation: drift 34s ease-in-out infinite;
+}
+
+.drift-slow {
+  animation: drift 52s ease-in-out infinite reverse;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   [data-js="on"] .reveal {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
+  }
+
+  .drift,
+  .drift-slow {
+    animation: none;
   }
 
   *,
@@ -139,6 +224,5 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }

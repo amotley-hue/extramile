@@ -4,13 +4,11 @@ import {
   looksLikeAirport,
 } from "@/lib/distance";
 import { calculateQuote, type Quote } from "@/lib/quote";
-import { vehicles } from "@/lib/rates";
 import { clientIp, rateLimit, tooManyRequests } from "@/lib/ratelimit";
 import { fieldErrors, quoteRequestSchema } from "@/lib/validation";
 
 export interface QuoteResponse {
-  /** Every vehicle priced for this trip, cheapest first. */
-  quotes: Quote[];
+  quote: Quote | null;
   miles?: number;
   durationMinutes?: number;
   isAirport: boolean;
@@ -33,7 +31,10 @@ export async function POST(request: Request) {
   const parsed = quoteRequestSchema.safeParse(body);
   if (!parsed.success) {
     return Response.json(
-      { error: "Please check the trip details.", fields: fieldErrors(parsed.error) },
+      {
+        error: "Please check the trip details.",
+        fields: fieldErrors(parsed.error),
+      },
       { status: 400 },
     );
   }
@@ -47,20 +48,15 @@ export async function POST(request: Request) {
 
   // Hourly charters bill on time, so no route lookup is needed.
   if (trip.tripType === "hourly") {
-    const quotes = vehicles.map((vehicle) =>
-      calculateQuote({
+    return Response.json({
+      quote: calculateQuote({
         tripType: "hourly",
-        vehicleId: vehicle.id,
         hours: trip.hours,
         pickupAt: trip.pickupAt,
         isAirport,
         extraStops: trip.extraStops,
         meetAndGreet: trip.meetAndGreet,
       }),
-    );
-
-    return Response.json({
-      quotes,
       isAirport,
       priced: true,
     } satisfies QuoteResponse);
@@ -68,7 +64,7 @@ export async function POST(request: Request) {
 
   if (!isMapsConfigured()) {
     return Response.json({
-      quotes: [],
+      quote: null,
       isAirport,
       priced: false,
       message:
@@ -80,10 +76,7 @@ export async function POST(request: Request) {
   try {
     route = await computeDrivingRoute(
       { placeId: trip.pickup.placeId, address: trip.pickup.address },
-      {
-        placeId: trip.dropoff?.placeId,
-        address: trip.dropoff?.address,
-      },
+      { placeId: trip.dropoff?.placeId, address: trip.dropoff?.address },
     );
   } catch (error) {
     console.error("Route lookup failed", error);
@@ -91,7 +84,7 @@ export async function POST(request: Request) {
 
   if (!route) {
     return Response.json({
-      quotes: [],
+      quote: null,
       isAirport,
       priced: false,
       message:
@@ -99,20 +92,15 @@ export async function POST(request: Request) {
     } satisfies QuoteResponse);
   }
 
-  const quotes = vehicles.map((vehicle) =>
-    calculateQuote({
+  return Response.json({
+    quote: calculateQuote({
       tripType: "transfer",
-      vehicleId: vehicle.id,
       miles: route.miles,
       pickupAt: trip.pickupAt,
       isAirport,
       extraStops: trip.extraStops,
       meetAndGreet: trip.meetAndGreet,
     }),
-  );
-
-  return Response.json({
-    quotes,
     miles: route.miles,
     durationMinutes: route.durationMinutes,
     isAirport,

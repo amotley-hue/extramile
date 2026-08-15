@@ -47,7 +47,6 @@ export async function POST(request: Request) {
   if (trip.tripType === "hourly") {
     quote = calculateQuote({
       tripType: "hourly",
-      vehicleId: trip.vehicleId,
       hours: trip.hours,
       pickupAt: trip.pickupAt,
       isAirport,
@@ -63,7 +62,6 @@ export async function POST(request: Request) {
       if (route) {
         quote = calculateQuote({
           tripType: "transfer",
-          vehicleId: trip.vehicleId,
           miles: route.miles,
           pickupAt: trip.pickupAt,
           isAirport,

@@ -5,15 +5,22 @@ export function cn(...parts: (string | false | null | undefined)[]): string {
   return parts.filter(Boolean).join(" ");
 }
 
+/*
+  Squared, not pill-shaped. A capsule button is the single most recognisable
+  tell of a generic template; a sharp edge with wide letter-spacing reads as
+  print, which is where this brand lives.
+*/
 const buttonBase =
-  "inline-flex items-center justify-center gap-2 rounded-full text-sm font-medium tracking-wide transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-55";
+  "group inline-flex items-center justify-center gap-2.5 text-[0.8125rem] uppercase tracking-[0.16em] transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-55";
 
 const buttonVariants = {
   primary:
-    "bg-brass text-ink hover:bg-brass-bright px-7 py-3.5 shadow-[0_1px_0_rgb(255_255_255/0.25)_inset]",
+    "bg-brass text-ink hover:bg-brass-bright px-9 py-4 font-medium",
   outline:
-    "border border-line-strong text-cream hover:border-brass hover:text-brass px-7 py-3.5",
-  ghost: "text-cream hover:text-brass px-3 py-2",
+    "border border-line-strong text-cream hover:border-brass hover:text-brass px-9 py-4",
+  /* A rule that grows under the label on hover — an underline, not a chip. */
+  ghost:
+    "border-b border-brass/35 pb-1.5 text-cream hover:border-brass hover:text-brass",
 } as const;
 
 type Variant = keyof typeof buttonVariants;
@@ -69,8 +76,10 @@ export function Section({
   children,
   ...rest
 }: ComponentProps<"section">) {
+  // Generous and consistent. The vertical rhythm is what separates sections
+  // now that they no longer carry backgrounds or borders.
   return (
-    <section className={cn("py-20 md:py-28", className)} {...rest}>
+    <section className={cn("py-28 md:py-40", className)} {...rest}>
       {children}
     </section>
   );
@@ -97,12 +106,10 @@ export function SectionHeading({
         className,
       )}
     >
-      {eyebrow ? <p className="eyebrow mb-4">{eyebrow}</p> : null}
-      <h2 className="text-[2.1rem] leading-[1.15] md:text-5xl md:leading-[1.1]">
-        {title}
-      </h2>
+      {eyebrow ? <p className="eyebrow mb-6">{eyebrow}</p> : null}
+      <h2 className="display-xl text-[2.4rem] md:text-[3.25rem]">{title}</h2>
       {lede ? (
-        <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">
+        <p className="mt-7 text-base leading-[1.75] text-muted md:text-lg">
           {lede}
         </p>
       ) : null}

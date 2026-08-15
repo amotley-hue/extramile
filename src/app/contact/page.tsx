@@ -12,21 +12,22 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <Section className="border-b border-line bg-ink-2/40 !py-16 md:!py-24">
+      <Section className="!pb-16 !pt-24 md:!pt-32">
         <div className="container-page">
           <div className="reveal max-w-3xl">
-            <p className="eyebrow mb-5">Contact</p>
-            <h1 className="text-[2.5rem] leading-[1.08] md:text-[3.5rem]">
-              You&rsquo;ll be talking to Craig.
+            <p className="eyebrow mb-7">Contact</p>
+            <h1 className="display-xl text-[3rem] md:text-[4.5rem]">
+              You&rsquo;ll be talking
+              <span className="block italic text-brass">to Craig.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">
+            <p className="mt-10 max-w-xl text-base leading-[1.75] text-muted md:text-lg">
               No queue, no dispatcher, no ticket number.
             </p>
           </div>
         </div>
       </Section>
 
-      <Section className="border-t border-line">
+      <Section className="!pt-8">
         <div className="container-page">
           <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
             <div>
@@ -36,19 +37,19 @@ export default function ContactPage() {
                 lede="Call or text — either reaches Craig directly. For anything within the next few hours, always call."
               />
 
-              <div className="reveal mt-10 space-y-4">
+              <div className="reveal mt-12">
                 <a
                   href={`tel:${business.phoneHref}`}
-                  className="flex items-center gap-5 rounded-2xl border border-line bg-ink-2 p-6 transition-colors hover:border-brass"
+                  className="group flex items-center gap-6 border-t border-line py-7 transition-colors last:border-b hover:border-brass/40"
                 >
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brass-dim">
+                  <span className="flex size-10 shrink-0 items-center justify-center border border-brass/25">
                     <Phone className="size-5 text-brass" aria-hidden />
                   </span>
                   <span>
-                    <span className="block text-xs uppercase tracking-[0.14em] text-faint">
+                    <span className="block text-[0.6875rem] uppercase tracking-[0.2em] text-faint">
                       Call or text
                     </span>
-                    <span className="mt-1 block font-display text-2xl text-cream">
+                    <span className="mt-1.5 block font-display text-3xl font-light text-cream transition-colors group-hover:text-brass">
                       {business.phone}
                     </span>
                   </span>
@@ -56,16 +57,16 @@ export default function ContactPage() {
 
                 <a
                   href={`mailto:${business.email}`}
-                  className="flex items-center gap-5 rounded-2xl border border-line bg-ink-2 p-6 transition-colors hover:border-brass"
+                  className="group flex items-center gap-6 border-t border-line py-7 transition-colors last:border-b hover:border-brass/40"
                 >
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-brass-dim">
+                  <span className="flex size-10 shrink-0 items-center justify-center border border-brass/25">
                     <Mail className="size-5 text-brass" aria-hidden />
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-xs uppercase tracking-[0.14em] text-faint">
+                    <span className="block text-[0.6875rem] uppercase tracking-[0.2em] text-faint">
                       Email
                     </span>
-                    <span className="mt-1 block break-all text-lg text-cream">
+                    <span className="mt-1.5 block break-all text-lg text-cream transition-colors group-hover:text-brass">
                       {business.email}
                     </span>
                   </span>
@@ -94,29 +95,34 @@ export default function ContactPage() {
             </div>
 
             <div className="reveal">
-              <div className="rounded-2xl border border-line bg-ink-2 p-8 md:p-10">
-                <p className="eyebrow mb-5">Booking a trip?</p>
-                <h2 className="font-display text-3xl leading-tight text-cream">
+              <div className="wash px-8 py-12 md:px-10 md:py-14">
+                <p className="eyebrow mb-6">Booking a trip?</p>
+                <h2 className="display-xl text-3xl md:text-4xl">
                   Skip the back and forth.
                 </h2>
-                <p className="mt-5 text-[15px] leading-relaxed text-muted">
-                  The instant quote gives you a real, all-in price for every
-                  vehicle in about a minute — before you hand over a phone
-                  number, and without creating an account. Craig gets the
-                  request the moment you send it.
+                <p className="mt-7 text-[15px] leading-[1.75] text-muted">
+                  The instant quote gives you a real, all-in price in about a
+                  minute — before you hand over a phone number, and without
+                  creating an account. Craig gets the request the moment you
+                  send it.
                 </p>
-                <ButtonLink href="/book" className="mt-8 w-full py-4">
-                  Get an instant quote
-                  <ArrowRight className="size-4" aria-hidden />
-                </ButtonLink>
-                <p className="mt-4 text-center text-xs text-faint">
+                <div className="mt-10">
+                  <ButtonLink href="/book" className="w-full">
+                    Get an instant quote
+                    <ArrowRight
+                      className="size-4 transition-transform duration-300 group-hover:translate-x-1"
+                      aria-hidden
+                    />
+                  </ButtonLink>
+                </div>
+                <p className="mt-5 text-center text-xs text-faint">
                   No payment required to request a reservation.
                 </p>
               </div>
 
-              <div className="mt-8 rounded-2xl border border-line p-8">
-                <p className="eyebrow mb-4">Areas served</p>
-                <p className="text-sm leading-relaxed text-muted">
+              <div className="mt-14 border-t border-line pt-10">
+                <p className="eyebrow mb-5">Areas served</p>
+                <p className="text-sm leading-[1.9] text-muted">
                   {serviceAreas.join(" · ")}
                 </p>
               </div>

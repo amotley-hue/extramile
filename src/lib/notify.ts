@@ -12,6 +12,7 @@
 import { Resend } from "resend";
 import { business } from "./business";
 import { formatUSD, type Quote } from "./quote";
+import { vehicleFullLabel } from "./rates";
 import type { BookingRequest } from "./validation";
 
 let cached: Resend | null | undefined;
@@ -93,7 +94,7 @@ function tripRows(booking: BookingRequest, quote: Quote | null): Row[] {
   }
 
   rows.push({ label: "Date & time", value: formatPickupAt(trip.pickupAt) });
-  rows.push({ label: "Vehicle", value: quote?.vehicleName ?? trip.vehicleId });
+  rows.push({ label: "Vehicle", value: vehicleFullLabel() });
   rows.push({
     label: "Passengers",
     value: `${booking.passengers} passenger${booking.passengers === 1 ? "" : "s"}, ${booking.luggage} bag${booking.luggage === 1 ? "" : "s"}`,

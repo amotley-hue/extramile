@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import { ArrowRight, Phone } from "lucide-react";
 import { ButtonLink, Section } from "@/components/ui";
 import { business } from "@/lib/business";
-import { cancellationPolicy, vehicles, waitTimePolicy } from "@/lib/rates";
+import {
+  cancellationPolicy,
+  vehicle,
+  vehicleFullLabel,
+  waitTimePolicy,
+} from "@/lib/rates";
 
 export const metadata: Metadata = {
   title: "Questions",
@@ -19,6 +24,10 @@ const faqs = [
   {
     q: "Is the quote the final price?",
     a: "Yes. The number includes the fare, all standard fees, and gratuity. The only things that can be added are tolls, parking, wait time past the included grace period, and stops you add on the day — all billed at cost, and all things you would have had to pay anyway.",
+  },
+  {
+    q: "What vehicle will I be in?",
+    a: `A ${vehicleFullLabel()}, seating up to ${vehicle.passengers} with room for ${vehicle.luggage} bags. Craig runs one vehicle rather than a fleet, so there is nothing to choose and no chance of a substitute showing up. The car you see is the car that arrives.`,
   },
   {
     q: "Do I have to pay when I book?",
@@ -42,11 +51,11 @@ const faqs = [
   },
   {
     q: "How many people can you take?",
-    a: `Up to ${Math.max(...vehicles.map((v) => v.passengers))} in the executive Sprinter. The sedan seats ${vehicles[0]!.passengers} and the SUV seats ${vehicles[1]!.passengers}. Tell us your headcount and bag count in the quote and the right vehicle is priced for you.`,
+    a: `Up to ${vehicle.passengers} passengers with ${vehicle.luggage} bags. If your group is larger than that, call ${business.phone} — Craig will tell you honestly whether he can cover it, and point you to someone reputable if he can't.`,
   },
   {
     q: "Can I book by the hour instead?",
-    a: `Yes. Hourly charter reserves the vehicle and chauffeur for a block of time and lets you change the itinerary as the day goes. Minimums start at ${vehicles[0]!.minimumHours} hours for the sedan and are shown before you commit.`,
+    a: `Yes. Hourly charter reserves the car and the chauffeur for a block of time and lets you change the itinerary as the day goes. The minimum is ${vehicle.minimumHours} hours, and it's shown before you commit.`,
   },
   {
     q: "What's your cancellation policy?",
@@ -88,27 +97,28 @@ export default function FaqPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
-      <Section className="border-b border-line bg-ink-2/40 !py-16 md:!py-24">
+      <Section className="!pb-16 !pt-24 md:!pt-32">
         <div className="container-page">
           <div className="reveal max-w-3xl">
-            <p className="eyebrow mb-5">Questions</p>
-            <h1 className="text-[2.5rem] leading-[1.08] md:text-[3.5rem]">
-              Answered plainly.
+            <p className="eyebrow mb-7">Questions</p>
+            <h1 className="display-xl text-[3rem] md:text-[4.5rem]">
+              Answered
+              <span className="block italic text-brass">plainly.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">
+            <p className="mt-10 max-w-xl text-base leading-[1.75] text-muted md:text-lg">
               If something isn&rsquo;t here, call {business.phone} and ask.
             </p>
           </div>
         </div>
       </Section>
 
-      <Section className="border-t border-line">
+      <Section className="!pt-8">
         <div className="container-page">
           <div className="mx-auto max-w-3xl divide-y divide-[var(--line)] border-y border-line">
             {faqs.map((faq) => (
               <details key={faq.q} className="group reveal">
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-6 text-left [&::-webkit-details-marker]:hidden">
-                  <span className="font-display text-xl text-cream transition-colors group-open:text-brass md:text-2xl">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-7 text-left [&::-webkit-details-marker]:hidden">
+                  <span className="font-display text-xl font-light text-cream transition-colors group-hover:text-brass-bright group-open:text-brass md:text-2xl">
                     {faq.q}
                   </span>
                   <span
@@ -119,30 +129,34 @@ export default function FaqPage() {
                     <span className="absolute left-1/2 top-0 h-4 w-px -translate-x-1/2 bg-current transition-transform duration-300 group-open:scale-y-0" />
                   </span>
                 </summary>
-                <p className="pb-7 pr-10 text-[15px] leading-relaxed text-muted">
+                <p className="pb-8 pr-10 text-[15px] leading-[1.75] text-muted">
                   {faq.a}
                 </p>
               </details>
             ))}
           </div>
 
-          <div className="reveal mx-auto mt-16 max-w-3xl text-center">
-            <h2 className="font-display text-3xl text-cream">
-              Still deciding?
-            </h2>
-            <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-muted">
+          <div className="reveal mx-auto mt-24 max-w-3xl text-center">
+            <h2 className="display-xl text-3xl md:text-4xl">Still deciding?</h2>
+            <p className="mx-auto mt-6 max-w-md text-sm leading-[1.75] text-muted">
               Run a quote. It takes about a minute, costs nothing, and there is
               no account to create.
             </p>
-            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <div className="mt-12 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-10">
               <ButtonLink href="/book">
                 Get an instant quote
-                <ArrowRight className="size-4" aria-hidden />
+                <ArrowRight
+                  className="size-4 transition-transform duration-300 group-hover:translate-x-1"
+                  aria-hidden
+                />
               </ButtonLink>
-              <ButtonLink href={`tel:${business.phoneHref}`} variant="outline">
-                <Phone className="size-4" aria-hidden />
+              <a
+                href={`tel:${business.phoneHref}`}
+                className="inline-flex items-center gap-2.5 text-sm text-muted transition-colors hover:text-cream"
+              >
+                <Phone className="size-4 text-brass" strokeWidth={1.5} aria-hidden />
                 {business.phone}
-              </ButtonLink>
+              </a>
             </div>
           </div>
         </div>

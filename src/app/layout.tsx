@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import { business } from "@/lib/business";
+import { Grain, GlowField } from "@/components/atmosphere";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { LocalBusinessSchema } from "@/components/local-business-schema";
@@ -71,18 +72,28 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${cormorant.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-ink text-cream">
+      <body className="relative flex min-h-full flex-col bg-ink text-cream">
         <Reveal />
+        <Grain />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-brass focus:px-4 focus:py-2 focus:font-medium focus:text-ink"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[101] focus:bg-brass focus:px-4 focus:py-2 focus:font-medium focus:text-ink"
         >
           Skip to content
         </a>
         <SiteHeader />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
+        {/*
+          The glow field is absolutely positioned inside this wrapper so it
+          spans the full document height and scrolls with the content. Fixing it
+          to the viewport would make the light sit still while the page moves,
+          which reads as a screen effect rather than as depth.
+        */}
+        <div className="relative flex-1">
+          <GlowField />
+          <main id="main" className="relative">
+            {children}
+          </main>
+        </div>
         <SiteFooter />
         <LocalBusinessSchema />
       </body>

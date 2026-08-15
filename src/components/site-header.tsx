@@ -9,7 +9,9 @@ import { cn } from "@/components/ui";
 
 const nav = [
   { href: "/services", label: "Services" },
-  { href: "/fleet", label: "Fleet" },
+  // "The car", not "Fleet" — Craig runs one vehicle and the nav shouldn't
+  // imply otherwise before the visitor even reaches the page.
+  { href: "/vehicle", label: "The Car" },
   { href: "/about", label: "About" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },

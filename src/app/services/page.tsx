@@ -84,28 +84,25 @@ const services = [
 export default function ServicesPage() {
   return (
     <>
-      <Section className="border-b border-line bg-ink-2/40 !py-16 md:!py-24">
+      <Section className="!pb-16 !pt-24 md:!pt-32">
         <div className="container-page">
           <div className="reveal max-w-3xl">
-            <p className="eyebrow mb-5">Services</p>
-            <h1 className="text-[2.5rem] leading-[1.08] md:text-[3.5rem]">
-              However you travel, it&rsquo;s the same standard.
+            <p className="eyebrow mb-7">Services</p>
+            <h1 className="display-xl text-[3rem] md:text-[4.5rem]">
+              However you travel,
+              <span className="block italic text-brass">
+                the same standard.
+              </span>
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">
+            <p className="mt-10 max-w-xl text-base leading-[1.75] text-muted md:text-lg">
               {business.serviceAreaLabel}, 24 hours a day, by reservation.
             </p>
           </div>
         </div>
       </Section>
 
-      {services.map((service, index) => (
-        <Section
-          key={service.id}
-          id={service.id}
-          className={
-            index % 2 === 1 ? "border-t border-line bg-ink-2" : "border-t border-line"
-          }
-        >
+      {services.map((service) => (
+        <Section key={service.id} id={service.id} className="seam">
           <div className="container-page">
             <div className="grid gap-12 lg:grid-cols-[1fr_0.85fr] lg:gap-20">
               <div>
@@ -114,11 +111,11 @@ export default function ServicesPage() {
                   title={service.title}
                   lede={service.lede}
                 />
-                <div className="reveal mt-8 space-y-5">
+                <div className="reveal mt-10 space-y-6">
                   {service.body.map((paragraph) => (
                     <p
                       key={paragraph.slice(0, 40)}
-                      className="text-[15px] leading-relaxed text-muted"
+                      className="text-[15px] leading-[1.8] text-muted"
                     >
                       {paragraph}
                     </p>
@@ -126,36 +123,37 @@ export default function ServicesPage() {
                 </div>
               </div>
 
-              <div className="reveal lg:pt-20">
+              <div className="reveal lg:pt-24">
                 <ul className="divide-y divide-[var(--line)] border-y border-line">
                   {service.points.map((point) => (
                     <li
                       key={point}
-                      className="flex items-start gap-4 py-4 text-sm text-cream"
+                      className="flex items-start gap-4 py-5 text-sm text-cream"
                     >
                       <span
-                        className="mt-2 size-1.5 shrink-0 rounded-full bg-brass"
+                        className="mt-[0.45rem] size-1 shrink-0 rounded-full bg-brass"
                         aria-hidden
                       />
                       {point}
                     </li>
                   ))}
                 </ul>
-                <ButtonLink
-                  href="/book"
-                  variant="outline"
-                  className="mt-8 w-full"
-                >
-                  Quote this trip
-                  <ArrowRight className="size-4" aria-hidden />
-                </ButtonLink>
+                <div className="mt-10">
+                  <ButtonLink href="/book" variant="ghost">
+                    Quote this trip
+                    <ArrowRight
+                      className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                      aria-hidden
+                    />
+                  </ButtonLink>
+                </div>
               </div>
             </div>
           </div>
         </Section>
       ))}
 
-      <Section className="border-t border-line">
+      <Section className="seam">
         <div className="container-page">
           <SectionHeading
             eyebrow="Coverage"
@@ -163,34 +161,39 @@ export default function ServicesPage() {
             lede="Metro Atlanta and North Georgia, plus every airport worth naming."
             align="center"
           />
-          <ul className="mx-auto mt-12 grid max-w-3xl gap-4 sm:grid-cols-2">
+          <ul className="mx-auto mt-16 max-w-3xl">
             {airports.map((airport) => (
               <li
                 key={airport.code}
-                className="reveal rounded-xl border border-line bg-ink-2 p-6"
+                className="reveal flex items-baseline gap-8 border-t border-line py-6 last:border-b"
               >
-                <p className="font-display text-xl text-brass">
+                <span className="font-display text-xl font-light text-brass">
                   {airport.code}
-                </p>
-                <p className="mt-2 text-sm text-cream">{airport.name}</p>
-                <p className="mt-1 text-xs text-faint">{airport.note}</p>
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[15px] text-cream">
+                    {airport.name}
+                  </span>
+                  <span className="mt-1 block text-xs text-faint">
+                    {airport.note}
+                  </span>
+                </span>
               </li>
             ))}
           </ul>
 
-          <div className="reveal mt-14 text-center">
+          <div className="reveal mt-16 text-center">
             <p className="text-sm text-muted">
               Going further than that? Long-distance and out-of-state trips are
               quoted case by case.
             </p>
-            <ButtonLink
+            <a
               href={`tel:${business.phoneHref}`}
-              variant="outline"
-              className="mt-6"
+              className="mt-8 inline-flex items-center gap-2.5 border-b border-brass/40 pb-1.5 text-sm text-cream transition-colors hover:border-brass hover:text-brass"
             >
-              <Phone className="size-4" aria-hidden />
+              <Phone className="size-4 text-brass" strokeWidth={1.5} aria-hidden />
               Ask Craig — {business.phone}
-            </ButtonLink>
+            </a>
           </div>
         </div>
       </Section>

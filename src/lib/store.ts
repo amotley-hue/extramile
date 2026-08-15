@@ -13,6 +13,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { BookingRequest } from "./validation";
 import type { Quote } from "./quote";
+import { vehicleFullLabel } from "./rates";
 
 let cached: SupabaseClient | null | undefined;
 
@@ -64,7 +65,9 @@ export async function saveBooking(
     reference,
     status: "new",
     trip_type: trip.tripType,
-    vehicle_id: trip.vehicleId,
+    // Recorded per booking rather than assumed, so historical requests stay
+    // accurate if Craig ever changes vehicles.
+    vehicle_name: vehicleFullLabel(),
     pickup_address: trip.pickup.address,
     pickup_place_id: trip.pickup.placeId ?? null,
     dropoff_address: trip.dropoff?.address ?? null,

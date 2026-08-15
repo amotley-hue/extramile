@@ -29,17 +29,19 @@ const assurances = [
 export default function BookPage() {
   return (
     <>
-      <section className="border-b border-line bg-ink-2/40 py-16 md:py-20">
+      <section className="pb-14 pt-24 md:pt-32">
         <div className="container-page">
           <div className="reveal mx-auto max-w-3xl text-center">
-            <p className="eyebrow mb-5">Instant quote</p>
-            <h1 className="text-[2.5rem] leading-[1.1] md:text-[3.5rem]">
-              Price your trip in about a minute.
+            <p className="eyebrow mb-7">Instant quote</p>
+            <h1 className="display-xl text-[3rem] md:text-[4rem]">
+              Price your trip
+              <span className="block italic text-brass">
+                in about a minute.
+              </span>
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">
+            <p className="mx-auto mt-10 max-w-lg text-base leading-[1.75] text-muted md:text-lg">
               Tell us where you&rsquo;re going and you&rsquo;ll see the real
-              number — every vehicle, gratuity included, before you give up a
-              phone number.
+              number — gratuity included, before you give up a phone number.
             </p>
           </div>
         </div>
@@ -51,22 +53,23 @@ export default function BookPage() {
         </div>
       </section>
 
-      <section className="border-t border-line bg-ink-2 py-16 md:py-20">
+      <section className="seam py-24 md:py-32">
         <div className="container-page">
-          <div className="grid gap-10 md:grid-cols-3">
+          <div className="grid gap-12 md:grid-cols-3">
             {assurances.map((item) => (
               <div key={item.title} className="reveal">
-                <h2 className="font-display text-xl text-cream">
+                <div className="rule mb-6" />
+                <h2 className="font-display text-xl font-light text-cream">
                   {item.title}
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-muted">
+                <p className="mt-4 text-sm leading-[1.75] text-muted">
                   {item.body}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="reveal mt-14 grid gap-8 border-t border-line pt-10 md:grid-cols-2">
+          <div className="reveal mt-20 grid gap-10 border-t border-line pt-12 md:grid-cols-2">
             <div>
               <p className="eyebrow mb-3">Wait time</p>
               <p className="text-sm leading-relaxed text-muted">
@@ -87,17 +90,17 @@ export default function BookPage() {
             </div>
           </div>
 
-          <div className="reveal mt-12 flex flex-col items-center gap-4 rounded-2xl border border-line bg-ink px-6 py-10 text-center">
-            <p className="font-display text-2xl text-cream">
+          <div className="reveal mt-20 flex flex-col items-center gap-5 text-center">
+            <p className="font-display text-3xl font-light text-cream">
               Traveling in the next few hours?
             </p>
-            <p className="max-w-md text-sm leading-relaxed text-muted">
+            <p className="max-w-md text-sm leading-[1.75] text-muted">
               Skip the form. Call Craig directly and he&rsquo;ll tell you right
               away whether he can cover it.
             </p>
             <a
               href={`tel:${business.phoneHref}`}
-              className="mt-2 inline-flex items-center gap-2 rounded-full bg-brass px-7 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-brass-bright"
+              className="mt-5 inline-flex items-center gap-2.5 bg-brass px-9 py-4 text-[0.8125rem] font-medium uppercase tracking-[0.16em] text-ink transition-colors hover:bg-brass-bright"
             >
               <Phone className="size-4" aria-hidden />
               {business.phone}
