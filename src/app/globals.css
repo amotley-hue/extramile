@@ -1,26 +1,144 @@
 @import "tailwindcss";
 
+/*
+  Midnight & brass.
+
+  The site commits to a single dark palette rather than following the OS
+  theme — a chauffeur service at 5am reads as a night product, and a
+  half-lit "light mode" version of it would undercut the whole impression.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #0a0c0e; /* page ground */
+  --ink-2: #101418; /* cards, sections */
+  --ink-3: #171d23; /* raised surfaces, inputs */
+  --line: rgb(244 241 234 / 0.1);
+  --line-strong: rgb(244 241 234 / 0.2);
+
+  --cream: #f4f1ea; /* primary text */
+  --muted: #9c968b; /* secondary text */
+  --faint: #6d685f; /* tertiary text, captions */
+
+  --brass: #c2a15c;
+  --brass-bright: #dcc085;
+  --brass-dim: rgb(194 161 92 / 0.14);
+
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-cream: var(--cream);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-brass: var(--brass);
+  --color-brass-bright: var(--brass-bright);
+  --color-brass-dim: var(--brass-dim);
+
+  --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern", "liga";
+  }
+
+  ::selection {
+    background: var(--brass);
+    color: var(--ink);
+  }
+
+  /* A single visible focus treatment everywhere, including inside dark cards. */
+  :focus-visible {
+    outline: 2px solid var(--brass-bright);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Small brass label above a heading. */
+  .eyebrow {
+    color: var(--brass);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .rule {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      var(--line-strong),
+      transparent 65%
+    );
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  max-width: 78rem;
+
+  @media (min-width: 1024px) {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* Scroll reveal. Elements start hidden only when JS is present to reveal
+   them, so no-JS visitors still see everything. */
+.reveal {
+  opacity: 1;
+}
+
+[data-js="on"] .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-js="on"] .reveal[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-js="on"] .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

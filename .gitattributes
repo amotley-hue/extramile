@@ -1,0 +1,11 @@
+# Normalize line endings so the repo is identical on Windows, macOS, and the
+# Linux builders on Vercel.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
