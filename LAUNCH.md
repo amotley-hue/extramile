@@ -71,16 +71,16 @@ you're not handing out a personal address for every purpose:
 ## 3. Put the code on GitHub
 
 The repo is already initialized and committed locally at
-`C:\Users\amotl\extramile-limo`.
+`C:\Users\amotl\extramile`.
 
 1. Create a free account at [github.com](https://github.com) if you don't have
    one.
-2. Create a **new private repository** named `extramile-limo`. Do **not**
+2. Create a **new private repository** named `extramile`. Do **not**
    initialize it with a README — the repo already has one.
 3. GitHub will show you commands. From the project folder, run:
 
 ```bash
-git remote add origin https://github.com/YOUR-USERNAME/extramile-limo.git
+git remote add origin https://github.com/YOUR-USERNAME/extramile.git
 git branch -M main
 git push -u origin main
 ```
@@ -96,10 +96,10 @@ to publishing it.
 Vercel is free at this scale and is built by the same people as Next.js.
 
 1. Go to [vercel.com](https://vercel.com) → **Sign up with GitHub**.
-2. **Add New → Project** → import `extramile-limo`.
+2. **Add New → Project** → import `extramile`.
 3. Vercel detects Next.js automatically. Leave every build setting alone.
 4. **Deploy**. About a minute. You'll get a URL like
-   `extramile-limo.vercel.app` — the real site, on a temporary address.
+   `extramile.vercel.app` — the real site, on a temporary address.
 5. **Project → Settings → Domains** → add `extramilelimo.com` and
    `www.extramilelimo.com`.
 6. Vercel shows the DNS records to add. Put them in Cloudflare DNS. If the
@@ -145,7 +145,7 @@ will not come close.
 
 1. Go to [console.cloud.google.com](https://console.cloud.google.com), sign in
    with the Workspace account.
-2. Create a project called `extramile-limo`.
+2. Create a project called `extramile`.
 3. **Billing** → attach a card. Required even for free-tier use.
 4. **APIs & Services → Library** → enable **exactly these two**:
    - **Places API (New)** — address autocomplete
@@ -175,7 +175,7 @@ bounced, spam-filed, or accidentally-deleted email never costs a customer.
 Free tier is plenty.
 
 1. Sign up at [supabase.com](https://supabase.com) → **New project**.
-   Name `extramile-limo`, region **East US**, and save the database password
+   Name `extramile`, region **East US**, and save the database password
    somewhere safe.
 2. **SQL Editor → New query**. Paste the entire contents of
    `supabase/schema.sql` from this repo and **Run**.
