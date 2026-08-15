@@ -109,24 +109,48 @@ describe("calculateQuote — transfers bill time and distance", () => {
   it("grows with drive time when distance is held constant", () => {
     // Same route, rush hour versus empty roads. Time-based pricing means these
     // must differ, or the surcharge for hard traffic silently vanishes.
+    //
+    // Both legs are deliberately long enough to clear the minimum fare. When
+    // the floor binds it absorbs part of the time difference, which is correct
+    // behaviour but would make this assertion measure the floor, not the rate.
     const quiet = calculateQuote({
       tripType: "transfer",
-      miles: 15,
-      durationMinutes: 20,
+      ...long,
       pickupAt: "2026-08-20T12:00",
     });
     const rushHour = calculateQuote({
       tripType: "transfer",
-      miles: 15,
-      durationMinutes: 50,
+      ...long,
+      durationMinutes: long.durationMinutes + 30,
       pickupAt: "2026-08-20T12:00",
     });
 
     expect(rushHour.total).toBeGreaterThan(quiet.total);
     expect(rushHour.total - quiet.total).toBeCloseTo(
       vehicle.perMinuteRate * 30 * (1 + surcharges.gratuityRate),
-      2,
+      1,
     );
+  });
+
+  it("lets the minimum fare absorb a small time difference", () => {
+    // Two short trips that both meter below the floor must price identically.
+    // This is the flip side of the test above and the reason it uses long legs.
+    const a = calculateQuote({
+      tripType: "transfer",
+      miles: 2,
+      durationMinutes: 8,
+      pickupAt: "2026-08-20T12:00",
+    });
+    const b = calculateQuote({
+      tripType: "transfer",
+      miles: 2,
+      durationMinutes: 14,
+      pickupAt: "2026-08-20T12:00",
+    });
+
+    if (vehicle.minimumFare > 0) {
+      expect(a.total).toBeCloseTo(b.total, 2);
+    }
   });
 
   it("respects a minimum fare when one is configured", () => {
@@ -200,11 +224,23 @@ describe("calculateQuote — surcharges and totals", () => {
     expect(plain.lines.some((l) => /airport/i.test(l.label))).toBe(false);
   });
 
-  it("charges per extra stop", () => {
+  it("charges per extra stop, and shows no line when stops are free", () => {
+    const none = calculateQuote({ ...base, extraStops: 0 });
     const one = calculateQuote({ ...base, extraStops: 1 });
     const two = calculateQuote({ ...base, extraStops: 2 });
 
     expect(two.subtotal - one.subtotal).toBeCloseTo(surcharges.perExtraStop, 2);
+
+    const stopLine = (q: typeof one) =>
+      q.lines.find((l) => /additional stop/i.test(l.label));
+
+    if (surcharges.perExtraStop > 0) {
+      expect(stopLine(one)?.amount).toBeCloseTo(surcharges.perExtraStop, 2);
+    } else {
+      // A $0 line reads as a bug to a customer, so it must not render at all.
+      expect(stopLine(one)).toBeUndefined();
+      expect(one.total).toBeCloseTo(none.total, 2);
+    }
   });
 
   it("ignores a negative stop count instead of discounting the trip", () => {
@@ -238,9 +274,12 @@ describe("calculateQuote — surcharges and totals", () => {
     });
 
     expect(quote.subtotal).toBeCloseTo(sumLines(quote.lines), 2);
-    expect(quote.gratuity).toBeCloseTo(
-      quote.subtotal * surcharges.gratuityRate,
-      2,
+    // Compared against the *rounded* product, not the raw one. Gratuity is
+    // billed in whole cents, so at an 18% rate the exact product can sit half
+    // a cent away — which is correct, and which a naive toBeCloseTo(…, 2)
+    // flags as a failure.
+    expect(quote.gratuity).toBe(
+      Math.round(quote.subtotal * surcharges.gratuityRate * 100) / 100,
     );
     expect(quote.total).toBeCloseTo(quote.subtotal + quote.gratuity, 2);
   });

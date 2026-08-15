@@ -483,9 +483,11 @@ export function BookingFlow() {
               <Field
                 label="Extra stops"
                 hint={
-                  extraStops > 0
+                  extraStops > 0 && surcharges.perExtraStop > 0
                     ? `+${formatUSD(surcharges.perExtraStop * extraStops)}`
-                    : undefined
+                    : extraStops > 0
+                      ? "No charge — Craig just needs to know."
+                      : undefined
                 }
               >
                 {(props) => (

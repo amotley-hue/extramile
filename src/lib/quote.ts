@@ -145,8 +145,10 @@ export function calculateQuote(input: QuoteInput): Quote {
     });
   }
 
+  // A $0 line reads as a mistake, so a stop Craig doesn't charge for simply
+  // doesn't appear on the quote.
   const stops = Math.max(0, Math.floor(input.extraStops ?? 0));
-  if (stops > 0) {
+  if (stops > 0 && surcharges.perExtraStop > 0) {
     lines.push({
       label: `${stops} additional stop${stops === 1 ? "" : "s"}`,
       amount: round(surcharges.perExtraStop * stops),

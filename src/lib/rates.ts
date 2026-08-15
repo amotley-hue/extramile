@@ -46,29 +46,18 @@ export interface Vehicle {
   // ---- Pricing ----
   /**
    * Flat amount every point-to-point trip starts at, before time and distance.
-   * TODO(craig): 0 means no booking fee. Set it if you want every trip to
-   * start at a fixed amount on top of the meter.
+   * 0 means no booking fee — the meter is the whole fare.
    */
   baseFare: number;
-  /** Dollars per mile of driving distance. Confirmed: $4.00. */
+  /** Dollars per mile of driving distance. */
   perMileRate: number;
-  /** Dollars per minute of drive time. Confirmed: $1.15. */
+  /** Dollars per minute of drive time. */
   perMinuteRate: number;
-  /**
-   * No point-to-point trip prices below this, in dollars.
-   * TODO(craig): 0 means no floor, which lets a short hop quote very low —
-   * a 3-mile, 10-minute trip is $12 + $11.50 = $23.50 before gratuity. Set
-   * this to the least you would send the SUV out for.
-   */
+  /** No point-to-point trip prices below this — the least worth sending the car. */
   minimumFare: number;
-  /**
-   * Dollars per hour for hourly charters.
-   * TODO(craig): unconfirmed. Note $1.15/min works out to $69/hour, which is
-   * almost certainly below what you would charge to hold the car for an
-   * evening — hourly is usually priced above the metered rate, not below.
-   */
+  /** Dollars per hour for hourly charters. */
   hourlyRate: number;
-  /** Hourly charters must book at least this many hours. TODO(craig): confirm. */
+  /** Hourly charters must book at least this many hours. */
   minimumHours: number;
 }
 
@@ -94,16 +83,23 @@ export const vehicle: Vehicle = {
     "Privacy glass",
   ],
 
-  // Confirmed by Craig.
   perMileRate: 4.0,
   perMinuteRate: 1.15,
 
-  // Not yet confirmed. Zero means "not charged" rather than a made-up number.
+  /** No booking fee — the meter is the whole fare. */
   baseFare: 0,
-  minimumFare: 0,
+  /**
+   * Short cross-town hops meter well under this. Without the floor,
+   * Buckhead to Midtown quotes about $36 all in, which is not worth taking
+   * the SUV out for.
+   */
+  minimumFare: 95,
 
-  // Not yet confirmed. See the note on hourlyRate above.
-  hourlyRate: 110,
+  /**
+   * Priced above the $69/hour the per-minute rate implies, because hourly
+   * buys exclusivity — the car is held and turns down other work.
+   */
+  hourlyRate: 95,
   minimumHours: 2,
 };
 
@@ -129,8 +125,13 @@ export const surcharges = {
   /** Hour (0-23) before which the after-hours fee applies. */
   afterHoursEnd: 5,
 
-  /** Per additional stop between pickup and dropoff. */
-  perExtraStop: 20,
+  /**
+   * Per additional stop between pickup and dropoff.
+   *
+   * 0 — Craig doesn't charge for stops. The form still asks, because he needs
+   * to know they're coming, but no line appears on the quote.
+   */
+  perExtraStop: 0,
 
   /**
    * Chauffeur parks, meets the passenger inside baggage claim with a name sign,
@@ -140,9 +141,10 @@ export const surcharges = {
 
   /**
    * Gratuity, shown as its own line so the customer sees exactly what they pay.
-   * Set to 0 to leave gratuity to the customer's discretion.
+   * Set to 0 to leave gratuity to the customer's discretion — but the site copy
+   * promises an all-in price, so that would need rewriting too.
    */
-  gratuityRate: 0.2,
+  gratuityRate: 0.18,
 } as const;
 
 /**
