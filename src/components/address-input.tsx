@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { MapPin } from "lucide-react";
+import { MapPin, Plane } from "lucide-react";
 import { cn } from "@/components/ui";
+import { airports } from "@/lib/business";
 
 export interface PlaceValue {
   address: string;
+  /** Mapbox feature id, set when a suggestion was picked. */
   placeId?: string;
+  /** Set when an airport chip was used; resolves server-side with no API call. */
+  airportCode?: string;
   isAirport?: boolean;
 }
 
@@ -31,6 +35,7 @@ export function AddressInput({
   placeholder,
   error,
   required,
+  getSessionToken,
 }: {
   label: string;
   value: PlaceValue;
@@ -38,6 +43,12 @@ export function AddressInput({
   placeholder?: string;
   error?: string;
   required?: boolean;
+  /**
+   * Returns the current Mapbox search-session token. A getter rather than a
+   * value so the token can be minted lazily on first use — generating it during
+   * render would be an impure call.
+   */
+  getSessionToken: () => string;
 }) {
   const id = useId();
   const listId = `${id}-list`;
@@ -67,7 +78,7 @@ export function AddressInput({
     const timer = setTimeout(async () => {
       try {
         const response = await fetch(
-          `/api/places?q=${encodeURIComponent(query)}`,
+          `/api/places?q=${encodeURIComponent(query)}&session=${encodeURIComponent(getSessionToken())}`,
           { signal: controller.signal },
         );
         if (!response.ok) return;
@@ -84,6 +95,9 @@ export function AddressInput({
       clearTimeout(timer);
       controller.abort();
     };
+    // getSessionToken is a stable ref-backed getter; including it would only
+    // re-run this on every parent render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value.address]);
 
   useEffect(() => {
@@ -100,6 +114,18 @@ export function AddressInput({
       address: suggestion.description,
       placeId: suggestion.placeId,
       isAirport: suggestion.isAirport,
+    });
+    setOpen(false);
+    setSuggestions([]);
+    setActive(-1);
+  };
+
+  const selectAirport = (airport: (typeof airports)[number]) => {
+    justSelected.current = true;
+    onChange({
+      address: `${airport.name} (${airport.code})`,
+      airportCode: airport.code,
+      isAirport: true,
     });
     setOpen(false);
     setSuggestions([]);
@@ -179,6 +205,39 @@ export function AddressInput({
           {error}
         </p>
       ) : null}
+
+      {/*
+        One-tap airports. Most trips touch one, and these resolve from a
+        constant table server-side — no geocoding call, no chance of a
+        mis-resolved terminal, and no billing.
+      */}
+      <div className="mt-3.5 flex flex-wrap items-center gap-x-2 gap-y-2">
+        <Plane
+          className="size-3 text-faint"
+          strokeWidth={1.5}
+          aria-hidden
+        />
+        {airports.map((airport) => {
+          const selected = value.airportCode === airport.code;
+          return (
+            <button
+              key={airport.code}
+              type="button"
+              onClick={() => selectAirport(airport)}
+              aria-pressed={selected}
+              title={airport.name}
+              className={cn(
+                "border px-2.5 py-1 text-[0.6875rem] uppercase tracking-[0.14em] transition-colors",
+                selected
+                  ? "border-brass bg-brass-dim text-brass"
+                  : "border-line text-faint hover:border-brass/50 hover:text-cream",
+              )}
+            >
+              {airport.code}
+            </button>
+          );
+        })}
+      </div>
 
       {open && suggestions.length > 0 ? (
         <ul

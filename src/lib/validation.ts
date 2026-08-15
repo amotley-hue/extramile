@@ -7,7 +7,14 @@ const localDateTime = z
 
 const place = z.object({
   address: z.string().trim().min(3, "Enter an address.").max(300),
+  /** Mapbox feature id from a picked suggestion. */
   placeId: z.string().trim().max(300).optional(),
+  /**
+   * Set when the customer used a one-tap airport chip. Only the code crosses
+   * the wire — the server looks up the coordinates itself, so a client cannot
+   * spoof a location to move the price.
+   */
+  airportCode: z.string().trim().max(4).optional(),
   isAirport: z.boolean().optional(),
 });
 
@@ -24,6 +31,11 @@ export const tripSchema = z
     hours: z.number().int().min(1).max(24).optional(),
     extraStops: z.number().int().min(0).max(10).default(0),
     meetAndGreet: z.boolean().default(false),
+    /**
+     * Groups the customer's autocomplete calls into one Mapbox billing
+     * session. Minted in the browser and threaded through to /retrieve.
+     */
+    sessionToken: z.string().trim().max(64).optional(),
   })
   .refine((data) => data.tripType !== "transfer" || data.dropoff !== undefined, {
     message: "Enter a dropoff address.",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useCallback, useId, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, CircleAlert, Loader2, Phone } from "lucide-react";
 import { AddressInput, type PlaceValue } from "@/components/address-input";
 import { Button, cn } from "@/components/ui";
@@ -123,10 +123,35 @@ export function BookingFlow() {
 
   const minDateTime = useMemo(() => nextHourLocal(), []);
 
+  /*
+    Mapbox bills Search Box per session, not per request: every /suggest call
+    plus the /retrieve that ends it, grouped by a shared token. Minting one
+    token per quote means a customer typing two addresses costs one session
+    instead of one per keystroke.
+
+    Held in a ref and created on first use — generating it during render would
+    be an impure call, and useState would re-render the whole form.
+  */
+  const sessionRef = useRef("");
+  const getSessionToken = useCallback(() => {
+    if (!sessionRef.current) {
+      sessionRef.current =
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : `s${Date.now()}`;
+    }
+    return sessionRef.current;
+  }, []);
+
+  // Structured signals first: an airport chip, or a suggestion Mapbox tagged as
+  // an airport. The text check is only a fallback for a typed address, and is
+  // narrow on purpose — "Airport Blvd" is a street, not a terminal.
   const isAirportTrip =
+    Boolean(pickup.airportCode) ||
+    Boolean(dropoff.airportCode) ||
     Boolean(pickup.isAirport) ||
     Boolean(dropoff.isAirport) ||
-    /airport|hartsfield|\bATL\b|\bPDK\b/i.test(
+    /\b(?:hartsfield|international airport|airport terminal|ATL|PDK|FTY|RYY)\b/i.test(
       `${pickup.address} ${dropoff.address}`,
     );
 
@@ -166,6 +191,7 @@ export function BookingFlow() {
           hours: tripType === "hourly" ? hours : undefined,
           extraStops,
           meetAndGreet: wantsMeetAndGreet,
+          sessionToken: getSessionToken(),
         }),
       });
 
@@ -177,6 +203,10 @@ export function BookingFlow() {
         setFormError(data.error ?? "We couldn't price that trip.");
         return;
       }
+
+      // The /retrieve calls on the server closed this billing session; a
+      // later edit starts a fresh one.
+      sessionRef.current = "";
 
       setResult(data);
       setStep(1);
@@ -218,6 +248,9 @@ export function BookingFlow() {
             hours: tripType === "hourly" ? hours : undefined,
             extraStops,
             meetAndGreet: wantsMeetAndGreet,
+            // Deliberately no sessionToken. The server re-prices from the
+            // stored address text via the per-request geocoder rather than
+            // opening a second billed search session for the same trip.
           },
           name,
           email,
@@ -398,6 +431,7 @@ export function BookingFlow() {
               onChange={setPickup}
               placeholder="Address, hotel, or airport terminal"
               error={errors.pickup}
+              getSessionToken={getSessionToken}
               required
             />
 
@@ -408,6 +442,7 @@ export function BookingFlow() {
                 onChange={setDropoff}
                 placeholder="Where are you headed?"
                 error={errors.dropoff}
+                getSessionToken={getSessionToken}
                 required
               />
             ) : (

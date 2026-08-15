@@ -137,30 +137,39 @@ more than Craig will send.
 
 ---
 
-## 6. Instant pricing — Google Maps Platform
+## 6. Instant pricing — Mapbox
 
-This is the feature that beats both competitor sites. Google gives every account
-a recurring monthly credit that covers roughly 10,000 address lookups — Craig
-will not come close.
+This is the feature that beats both competitor sites. Mapbox was chosen over
+Google Maps because Google requires a payment card before it will serve a single
+request; Mapbox's free tiers are usable without one, at least at signup.
 
-1. Go to [console.cloud.google.com](https://console.cloud.google.com), sign in
-   with the Workspace account.
-2. Create a project called `extramile`.
-3. **Billing** → attach a card. Required even for free-tier use.
-4. **APIs & Services → Library** → enable **exactly these two**:
-   - **Places API (New)** — address autocomplete
-   - **Routes API** — driving distance
-5. **Credentials → Create credentials → API key**. Copy it.
-6. **Restrict the key immediately.** This matters — an unrestricted key found by
-   a scraper gets billed to your card:
-   - **Application restrictions:** None. *(The key is used server-side only, so
-     there is no referrer or IP to restrict against. This is why step 7's
-     secrecy matters.)*
-   - **API restrictions: Restrict key** → select only Places API (New) and
-     Routes API.
-7. **Billing → Budgets & alerts** → create a budget of **$10/month** with email
-   alerts at 50% / 90% / 100%. You should never hit it. If you do, something is
-   wrong and you want to know that day.
+1. Sign up at [account.mapbox.com](https://account.mapbox.com).
+2. Go to **Tokens → Create a token**.
+3. Name it `extramile-server`. Under **Scopes**, leave the default *public*
+   scopes checked — the site only reads. Do **not** enable any `write` scope.
+4. Leave **URL restrictions empty.** The token is used server-side only, so
+   there is no referrer to restrict against; its secrecy is the control, which
+   is why it never goes in a `NEXT_PUBLIC_` variable.
+5. Copy the token. It starts `pk.`.
+
+**What it costs.** Three products are in play, each with its own free tier:
+
+| Product | Used for | Free tier | Above that |
+| --- | --- | --- | --- |
+| Search Box *sessions* | Address autocomplete | 500 / month | $3 per 1,000 |
+| Geocoding v6 | Re-pricing on booking | 100,000 / month | $0.75 per 1,000 |
+| Directions | Driving distance | 100,000 / month | $2 per 1,000 |
+
+The one to watch is **Search Box sessions — 500/month is not enormous.** The
+site is built to spend them carefully: one session covers a customer's entire
+quote no matter how many keystrokes, airport picks cost nothing at all, and
+re-pricing at booking uses the per-request geocoder instead of opening a second
+session. Realistically Craig would need well over 500 quote attempts in a month
+to pay anything, and the overage is a few dollars.
+
+Set a spending limit anyway: **Account → Settings → Billing → set a usage
+alert.** You want to hear about it the day something goes wrong, not at
+month end.
 
 The site also rate-limits these endpoints per visitor, so a scraper can't run up
 the bill through the site itself.
@@ -197,7 +206,7 @@ Free tier is plenty.
 
 | Name | Value |
 | --- | --- |
-| `GOOGLE_MAPS_API_KEY` | key from step 6 |
+| `MAPBOX_ACCESS_TOKEN` | token from step 6 (starts `pk.`) |
 | `RESEND_API_KEY` | key from step 5 |
 | `BOOKING_FROM_EMAIL` | `The Extra Mile <bookings@extramilelimo.com>` |
 | `BOOKING_TO_EMAIL` | `craig@extramilelimo.com` |
@@ -286,17 +295,18 @@ Also submit the sitemap: [Google Search Console](https://search.google.com/searc
 | Hosting | Vercel Hobby | Free |
 | Email sending | Resend | Free to 3k/mo |
 | Booking log | Supabase | Free tier |
-| Maps | Google Cloud | Free credit covers it |
+| Addresses & distance | Mapbox | Free to 500 quotes/mo, then ~$3/1k |
 | Google Business Profile | Google | Free |
 
 ## When something breaks
 
 - **Booking requests not arriving** — Vercel → Deployments → latest → Runtime
   Logs. Check `RESEND_API_KEY` is set and the domain shows Verified in Resend.
-- **Quotes say pricing isn't switched on** — `GOOGLE_MAPS_API_KEY` is missing or
-  the two APIs aren't enabled. Redeploy after adding it.
-- **Addresses don't autocomplete** — Places API (New) not enabled, or the key
-  restriction excludes it.
+- **Quotes say pricing isn't switched on** — `MAPBOX_ACCESS_TOKEN` is missing.
+  Environment variables are read at build time, so redeploy after adding it.
+- **Addresses don't autocomplete** — check the token starts `pk.` and has no
+  URL restriction. Vercel → Deployments → Runtime Logs will show the exact
+  Mapbox status code.
 - **A customer says the price changed** — they're right to ask. Check
   `src/lib/rates.ts` history in git; the quote is recalculated server-side at
   submission, so a stale browser tab can show an old number.

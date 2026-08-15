@@ -47,29 +47,55 @@ export const business = {
   },
 } as const;
 
-/** Airports served, used in the quote form and the airports section. */
+/**
+ * Airports served.
+ *
+ * Coordinates are baked in on purpose. Airports are the single most common
+ * endpoint of a trip, so resolving them from a constant costs no geocoding
+ * call, never mis-resolves, and makes the one-tap chips in the quote form
+ * completely free to use.
+ *
+ * `lat`/`lon` point at the passenger pickup area rather than the airfield
+ * centroid, so driving distance reflects the trip a passenger actually takes.
+ */
 export const airports = [
   {
     code: "ATL",
     name: "Hartsfield–Jackson Atlanta International",
     note: "Domestic & International, all concourses",
+    lat: 33.6407,
+    lon: -84.4277,
   },
   {
     code: "PDK",
     name: "DeKalb–Peachtree Airport",
     note: "Private aviation / FBO",
+    lat: 33.8756,
+    lon: -84.302,
   },
   {
     code: "FTY",
     name: "Fulton County Executive Airport",
     note: "Private aviation / FBO",
+    lat: 33.7791,
+    lon: -84.5214,
   },
   {
     code: "RYY",
     name: "Cobb County International (McCollum Field)",
     note: "Private aviation / FBO",
+    lat: 34.0132,
+    lon: -84.5971,
   },
 ] as const;
+
+export type AirportCode = (typeof airports)[number]["code"];
+
+export function findAirport(code: string | undefined) {
+  if (!code) return undefined;
+  const upper = code.toUpperCase();
+  return airports.find((airport) => airport.code === upper);
+}
 
 /** Cities and areas covered, used for local SEO and the coverage section. */
 export const serviceAreas = [

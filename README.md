@@ -37,7 +37,7 @@ easier for Craig to run his day out of his phone.
 | Validation | Zod 4 |
 | Email | Resend |
 | Database | Supabase (booking request log only) |
-| Maps | Google Places API (New) + Routes API |
+| Addresses & distance | Mapbox Search Box + Geocoding v6 + Directions |
 | Tests | Vitest |
 | Hosting | Vercel |
 
@@ -49,9 +49,9 @@ cp .env.example .env.local   # fill in what you have; all of it is optional
 npm run dev
 ```
 
-The site runs with **no environment variables at all**. Without a Maps key the
-quote step degrades to a request form that says so plainly, rather than guessing
-a distance — a wrong price is worse than no price.
+The site runs with **no environment variables at all**. Without a Mapbox token
+the quote step degrades to a request form that says so plainly, rather than
+guessing a distance — a wrong price is worse than no price.
 
 ```bash
 npm run dev        # dev server on :3000
@@ -70,8 +70,8 @@ src/
     book/                 Quote + booking funnel
     services/ fleet/ about/ faq/ contact/
     api/
-      places/route.ts     Address autocomplete proxy (keeps the Maps key server-side)
-      quote/route.ts      Prices every vehicle for a trip
+      places/route.ts     Autocomplete proxy (keeps the Mapbox token server-side)
+      quote/route.ts      Prices a trip
       booking/route.ts    Re-prices server-side, persists, emails
     sitemap.ts robots.ts
   components/
@@ -83,7 +83,8 @@ src/
     business.ts           Name, phone, service area — single source of truth
     rates.ts              THE RATE CARD
     quote.ts              Pricing engine (pure functions)
-    distance.ts           Google Maps integration
+    distance.ts           Mapbox integration
+    pricing-service.ts    Trip -> resolved addresses -> route -> quote
     validation.ts         Zod schemas
     notify.ts             Booking emails
     store.ts              Supabase persistence
@@ -103,9 +104,16 @@ public/images/README.md   What photos to shoot and where they go
 - **Prices are recalculated server-side on submit.** The number the browser
   posts is treated as display only. A posted price is an offer from the
   customer, not a rate Craig agreed to.
-- **The Maps key never reaches the browser.** Both Google APIs are called from
-  route handlers. That's also why the key has no application restriction — there
-  is no referrer to restrict against, so its secrecy is the control.
+- **The Mapbox token never reaches the browser.** Every Mapbox call happens in a
+  route handler. That's also why the token carries no URL restriction — there is
+  no referrer to restrict against, so its secrecy is the control.
+- **Search Box is billed per session, not per request.** One token covers a
+  customer's whole quote however much they type; airport chips resolve from a
+  constant table and cost nothing; re-pricing at booking uses the per-request
+  geocoder rather than opening a second session. Changing where the session
+  token is minted or reset changes Craig's bill.
+- **Airport coordinates are hardcoded** in `business.ts`. Only the airport code
+  crosses the wire, so a client cannot spoof a location to move the price.
 - **A booking is written to Supabase before email is trusted**, and if neither
   the record nor Craig's notification lands, the customer is told to call rather
   than shown a false confirmation.

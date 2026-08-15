@@ -1,6 +1,5 @@
-import { computeDrivingRoute, isMapsConfigured, looksLikeAirport } from "@/lib/distance";
 import { sendBookingEmails } from "@/lib/notify";
-import { calculateQuote, type Quote } from "@/lib/quote";
+import { priceTrip } from "@/lib/pricing-service";
 import { clientIp, rateLimit, tooManyRequests } from "@/lib/ratelimit";
 import { newReference, saveBooking } from "@/lib/store";
 import { bookingRequestSchema, fieldErrors } from "@/lib/validation";
@@ -34,46 +33,19 @@ export async function POST(request: Request) {
     return Response.json({ reference: newReference(), ok: true });
   }
 
-  const { trip } = booking;
-  const isAirport =
-    trip.pickup.isAirport ||
-    trip.dropoff?.isAirport ||
-    looksLikeAirport(trip.pickup.address, trip.dropoff?.address);
+  // Re-price server-side through the same path the quote used. The client's
+  // number is display only; a posted price is an offer from the customer, not
+  // a price Craig agreed to.
+  //
+  // A pricing failure must never cost Craig the booking — priceTrip returns a
+  // null quote rather than throwing, and the request goes through unpriced for
+  // Craig to quote by hand.
+  const priced = await priceTrip(booking.trip).catch((error) => {
+    console.error("Re-pricing failed; forwarding request unpriced", error);
+    return null;
+  });
 
-  // Re-price server-side. The client's number is display only; a posted price
-  // is an offer from the customer, not a price Craig agreed to.
-  let quote: Quote | null = null;
-
-  if (trip.tripType === "hourly") {
-    quote = calculateQuote({
-      tripType: "hourly",
-      hours: trip.hours,
-      pickupAt: trip.pickupAt,
-      isAirport,
-      extraStops: trip.extraStops,
-      meetAndGreet: trip.meetAndGreet,
-    });
-  } else if (isMapsConfigured()) {
-    try {
-      const route = await computeDrivingRoute(
-        { placeId: trip.pickup.placeId, address: trip.pickup.address },
-        { placeId: trip.dropoff?.placeId, address: trip.dropoff?.address },
-      );
-      if (route) {
-        quote = calculateQuote({
-          tripType: "transfer",
-          miles: route.miles,
-          pickupAt: trip.pickupAt,
-          isAirport,
-          extraStops: trip.extraStops,
-          meetAndGreet: trip.meetAndGreet,
-        });
-      }
-    } catch (error) {
-      // A pricing failure must not cost Craig the booking.
-      console.error("Re-pricing failed; forwarding request unpriced", error);
-    }
-  }
+  const quote = priced?.quote ?? null;
 
   const reference = newReference();
 
@@ -99,7 +71,7 @@ export async function POST(request: Request) {
       reference,
       email: booking.email,
       phone: booking.phone,
-      pickupAt: trip.pickupAt,
+      pickupAt: booking.trip.pickupAt,
     });
     return Response.json(
       {
