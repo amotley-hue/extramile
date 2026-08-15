@@ -10,7 +10,7 @@ const columns = [
       { href: "/services#corporate", label: "Corporate travel" },
       { href: "/services#hourly", label: "Hourly charter" },
       { href: "/services#events", label: "Events & occasions" },
-      { href: "/vehicle", label: "The car" },
+      { href: "/vehicle", label: "Vehicle details" },
     ],
   },
   {

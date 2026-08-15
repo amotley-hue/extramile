@@ -52,12 +52,12 @@ export interface Vehicle {
 }
 
 /**
- * Craig runs a single vehicle. That is a feature, not a limitation — one car
- * means one standard, and the site says so rather than implying a fleet.
+ * The vehicle. Craig runs one, so the site presents it as a spec sheet rather
+ * than a choice — and without drawing attention to the fact that there is only
+ * one, which just makes the reader think about fleet size.
  *
  * If a second vehicle is ever added, this becomes an array and the booking flow
- * gains a selection step back. Until then, nothing on the site asks the
- * customer to choose.
+ * gains a selection step back.
  */
 export const vehicle: Vehicle = {
   name: "Luxury SUV",

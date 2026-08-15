@@ -5,8 +5,8 @@ import { business } from "@/lib/business";
 import { vehicle, vehicleLabel } from "@/lib/rates";
 
 export const metadata: Metadata = {
-  title: "The car",
-  description: `A single luxury SUV seating ${vehicle.passengers}, detailed before every trip and driven by owner Craig Mason. Private chauffeur service across metro Atlanta.`,
+  title: "Vehicle details",
+  description: `A late-model luxury SUV seating ${vehicle.passengers}, detailed before every trip and driven by owner Craig Mason. Private chauffeur service across metro Atlanta.`,
   alternates: { canonical: "/vehicle" },
 };
 
@@ -16,8 +16,8 @@ const standards = [
     body: "Not every morning — every trip. You are never the second person in that back seat today.",
   },
   {
-    title: "One car, so no surprises",
-    body: "A larger operator sends whichever vehicle is free. There is nothing to send but this one, which means the standard cannot quietly slip on a busy Friday.",
+    title: "The same car, every time",
+    body: "You are not assigned whatever happens to be free that morning. The vehicle on this page is the one that pulls up, on every trip you book.",
   },
   {
     title: "Stocked without being asked",
@@ -35,15 +35,15 @@ export default function VehiclePage() {
       <Section className="!pb-16 !pt-24 md:!pt-32">
         <div className="container-page">
           <div className="reveal max-w-3xl">
-            <p className="eyebrow mb-7">The car</p>
+            <p className="eyebrow mb-7">Vehicle</p>
             <h1 className="display-xl text-[3rem] md:text-[4.5rem]">
-              One car,
-              <span className="block italic text-brass">kept properly.</span>
+              Every detail,
+              <span className="block italic text-brass">already handled.</span>
             </h1>
             <p className="mt-10 max-w-xl text-base leading-[1.75] text-muted md:text-lg">
-              Craig runs a single {vehicleLabel()}. It is not a limitation — it
-              is the reason the standard holds. There is no fleet to gamble on,
-              no substitute vehicle, and no chauffeur you haven&rsquo;t met.
+              A late-model {vehicleLabel()} seating {vehicle.passengers}, with
+              room for {vehicle.luggage} bags. Detailed before every trip,
+              stocked before you ask, and driven by {business.owner} himself.
             </p>
           </div>
         </div>
@@ -137,9 +137,9 @@ export default function VehiclePage() {
               </ul>
 
               <p className="mt-10 text-sm leading-relaxed text-faint">
-                Traveling with more than {vehicle.passengers} people? Call{" "}
-                {business.phone} — Craig will tell you honestly whether he can
-                cover it or point you to someone who can.
+                Traveling with a larger group? Call {business.phone} — Craig
+                will tell you honestly whether he can cover it, or point you to
+                someone reputable who can.
               </p>
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function VehiclePage() {
         <div className="container-page">
           <SectionHeading
             eyebrow="Standards"
-            title="What's true every single trip."
+            title="What's true every trip."
             align="center"
           />
           <div className="mt-20 grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">

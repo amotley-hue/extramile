@@ -235,8 +235,8 @@ export default function HomePage() {
             <div>
               <SectionHeading
                 eyebrow="The vehicle"
-                title="One car. One standard."
-                lede={`Craig runs a single ${vehicleLabel()} and keeps it immaculate. There is no fleet to gamble on and no "whatever's available" — the car in the photograph is the car at the curb.`}
+                title="The car at the curb."
+                lede={`A late-model ${vehicleLabel()}, detailed before every trip and stocked before you ask. Leather, rear climate control, charging for whatever you brought, and cold water waiting.`}
               />
 
               <dl className="reveal mt-12 grid grid-cols-2 gap-x-10 gap-y-8 border-t border-line pt-10">
@@ -274,8 +274,8 @@ export default function HomePage() {
               </ul>
 
               <div className="reveal mt-12">
-                <ButtonLink href="/fleet" variant="ghost">
-                  More about the car
+                <ButtonLink href="/vehicle" variant="ghost">
+                  Vehicle details
                   <ArrowRight
                     className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
                     aria-hidden

@@ -27,7 +27,7 @@ const faqs = [
   },
   {
     q: "What vehicle will I be in?",
-    a: `A ${vehicleFullLabel()}, seating up to ${vehicle.passengers} with room for ${vehicle.luggage} bags. Craig runs one vehicle rather than a fleet, so there is nothing to choose and no chance of a substitute showing up. The car you see is the car that arrives.`,
+    a: `A late-model ${vehicleFullLabel()}, seating up to ${vehicle.passengers} with room for ${vehicle.luggage} bags — leather, rear climate control, charging, and chilled water. It's detailed before every trip, and it's the same vehicle every time you book.`,
   },
   {
     q: "Do I have to pay when I book?",
@@ -51,7 +51,7 @@ const faqs = [
   },
   {
     q: "How many people can you take?",
-    a: `Up to ${vehicle.passengers} passengers with ${vehicle.luggage} bags. If your group is larger than that, call ${business.phone} — Craig will tell you honestly whether he can cover it, and point you to someone reputable if he can't.`,
+    a: `Up to ${vehicle.passengers} passengers with ${vehicle.luggage} bags. For a larger group, call ${business.phone} — Craig will tell you honestly whether he can cover it, and point you to someone reputable if he can't.`,
   },
   {
     q: "Can I book by the hour instead?",
