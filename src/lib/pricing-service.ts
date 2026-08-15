@@ -101,7 +101,15 @@ export async function priceTrip(trip: Trip): Promise<PricedTrip> {
 
   let route: Awaited<ReturnType<typeof computeDrivingRoute>> = null;
   try {
-    route = await computeDrivingRoute(pickup.coordinates, dropoff.coordinates);
+    // Drive time is billed, so the estimate is taken for the actual pickup
+    // time rather than for right now. A 7am airport run genuinely costs more
+    // than the same route at 11pm, and quoting it any other way would mean
+    // under-charging the trips that are hardest to drive.
+    route = await computeDrivingRoute(
+      pickup.coordinates,
+      dropoff.coordinates,
+      trip.pickupAt,
+    );
   } catch (error) {
     console.error("Route lookup failed", error);
   }
@@ -114,6 +122,7 @@ export async function priceTrip(trip: Trip): Promise<PricedTrip> {
     quote: calculateQuote({
       tripType: "transfer",
       miles: route.miles,
+      durationMinutes: route.durationMinutes,
       pickupAt: trip.pickupAt,
       isAirport,
       extraStops: trip.extraStops,

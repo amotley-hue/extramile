@@ -3,20 +3,25 @@
  *  RATE CARD  —  CRAIG: THIS IS THE ONLY FILE YOU NEED TO EDIT TO CHANGE PRICES
  * ============================================================================
  *
- *  >>> EVERY PRICE BELOW IS A PLACEHOLDER. <<<
+ *  Craig's confirmed rates: $4.00 per mile and $1.15 per minute.
  *
- *  Benchmarked against typical metro-Atlanta black-car pricing so the site is
- *  demonstrable end to end, but these are NOT your rates. Replace them before
- *  the site goes live, or the quote tool will quote prices you cannot honor.
+ *  Point-to-point trips bill on time AND distance, added together — the same
+ *  model the ride-hailing apps use, which is what customers expect to see:
  *
- *  The quote formula:
- *
- *      fare      = max(minimumFare, baseFare + perMileRate x miles)
+ *      fare      = baseFare + (perMileRate x miles) + (perMinuteRate x minutes)
+ *      fare      = max(fare, minimumFare)
  *      subtotal  = fare + airportFee? + afterHoursFee? + stops + meetAndGreet?
  *      total     = subtotal + gratuity
  *
+ *  Because time is priced, the drive duration is quoted with traffic for the
+ *  actual pickup time — a 7am airport run prices higher than the same route at
+ *  11pm, which is the honest answer.
+ *
  *  Hourly charters price as: hourlyRate x hours (>= minimumHours), then the
  *  same surcharges and gratuity.
+ *
+ *  >>> STILL UNCONFIRMED — see the notes on each field below: <<<
+ *      baseFare, minimumFare, hourlyRate, minimumHours, and every surcharge.
  */
 
 export interface Vehicle {
@@ -39,15 +44,31 @@ export interface Vehicle {
   features: string[];
 
   // ---- Pricing ----
-  /** Flat amount every point-to-point trip starts at, in dollars. */
+  /**
+   * Flat amount every point-to-point trip starts at, before time and distance.
+   * TODO(craig): 0 means no booking fee. Set it if you want every trip to
+   * start at a fixed amount on top of the meter.
+   */
   baseFare: number;
-  /** Dollars per mile of driving distance. */
+  /** Dollars per mile of driving distance. Confirmed: $4.00. */
   perMileRate: number;
-  /** No point-to-point trip prices below this, in dollars. */
+  /** Dollars per minute of drive time. Confirmed: $1.15. */
+  perMinuteRate: number;
+  /**
+   * No point-to-point trip prices below this, in dollars.
+   * TODO(craig): 0 means no floor, which lets a short hop quote very low —
+   * a 3-mile, 10-minute trip is $12 + $11.50 = $23.50 before gratuity. Set
+   * this to the least you would send the SUV out for.
+   */
   minimumFare: number;
-  /** Dollars per hour for hourly charters. */
+  /**
+   * Dollars per hour for hourly charters.
+   * TODO(craig): unconfirmed. Note $1.15/min works out to $69/hour, which is
+   * almost certainly below what you would charge to hold the car for an
+   * evening — hourly is usually priced above the metered rate, not below.
+   */
   hourlyRate: number;
-  /** Hourly charters must book at least this many hours. */
+  /** Hourly charters must book at least this many hours. TODO(craig): confirm. */
   minimumHours: number;
 }
 
@@ -73,9 +94,15 @@ export const vehicle: Vehicle = {
     "Privacy glass",
   ],
 
-  baseFare: 65,
-  perMileRate: 3.5,
-  minimumFare: 105,
+  // Confirmed by Craig.
+  perMileRate: 4.0,
+  perMinuteRate: 1.15,
+
+  // Not yet confirmed. Zero means "not charged" rather than a made-up number.
+  baseFare: 0,
+  minimumFare: 0,
+
+  // Not yet confirmed. See the note on hourlyRate above.
   hourlyRate: 110,
   minimumHours: 2,
 };

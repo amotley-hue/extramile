@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
+    "rates": "vitest run -c vitest.rates.mts --disable-console-intercept",
     "test:watch": "vitest",
     "check": "npm run typecheck && npm run lint && npm run test"
   },

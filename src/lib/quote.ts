@@ -14,6 +14,8 @@ export interface QuoteInput {
   tripType: TripType;
   /** Driving distance in miles. Required for `transfer`. */
   miles?: number;
+  /** Estimated drive time in minutes, with traffic. Required for `transfer`. */
+  durationMinutes?: number;
   /** Charter duration in hours. Required for `hourly`. */
   hours?: number;
   /**
@@ -45,6 +47,7 @@ export interface Quote {
   /** Hours actually billed, after applying the vehicle's minimum. */
   billedHours?: number;
   miles?: number;
+  durationMinutes?: number;
   disclaimer: string;
 }
 
@@ -78,6 +81,7 @@ export function calculateQuote(input: QuoteInput): Quote {
 
   let billedHours: number | undefined;
   let miles: number | undefined;
+  let durationMinutes: number | undefined;
 
   if (input.tripType === "hourly") {
     const requested = Math.max(0, input.hours ?? 0);
@@ -92,16 +96,38 @@ export function calculateQuote(input: QuoteInput): Quote {
     });
   } else {
     miles = Math.max(0, input.miles ?? 0);
-    const metered = vehicle.baseFare + vehicle.perMileRate * miles;
+    durationMinutes = Math.max(0, input.durationMinutes ?? 0);
+
+    const distanceCharge = vehicle.perMileRate * miles;
+    const timeCharge = vehicle.perMinuteRate * durationMinutes;
+    const metered = vehicle.baseFare + distanceCharge + timeCharge;
     const fare = Math.max(vehicle.minimumFare, metered);
-    lines.push({
-      label: `Chauffeured transfer — ${miles.toFixed(1)} mi`,
-      amount: round(fare),
-      note:
-        fare > metered
-          ? `$${vehicle.minimumFare} minimum fare applied`
-          : `$${vehicle.baseFare} base + $${vehicle.perMileRate}/mi`,
-    });
+
+    if (fare > metered) {
+      // The minimum is binding, so showing the component lines would be
+      // misleading — they would not add up to what is charged.
+      lines.push({
+        label: `Chauffeured transfer — ${miles.toFixed(1)} mi, ${durationMinutes} min`,
+        amount: round(fare),
+        note: `${formatUSD(vehicle.minimumFare)} minimum fare applied`,
+      });
+    } else {
+      // Time and distance are shown separately. Craig quotes on both, so the
+      // breakdown should say so rather than hiding it in one number.
+      if (vehicle.baseFare > 0) {
+        lines.push({ label: "Base fare", amount: round(vehicle.baseFare) });
+      }
+      lines.push({
+        label: `Distance — ${miles.toFixed(1)} mi`,
+        amount: round(distanceCharge),
+        note: `${formatUSD(vehicle.perMileRate)} per mile`,
+      });
+      lines.push({
+        label: `Drive time — ${durationMinutes} min`,
+        amount: round(timeCharge),
+        note: `${formatUSD(vehicle.perMinuteRate)} per minute, estimated with traffic`,
+      });
+    }
   }
 
   if (input.isAirport && surcharges.airportFee > 0) {
@@ -147,6 +173,7 @@ export function calculateQuote(input: QuoteInput): Quote {
     total,
     billedHours,
     miles,
+    durationMinutes,
     disclaimer: quoteDisclaimer,
   };
 }

@@ -314,22 +314,47 @@ export interface RouteResult {
   durationMinutes: number;
 }
 
-/** Driving distance between two coordinate pairs. */
+/**
+ * Driving distance and time between two coordinate pairs.
+ *
+ * `departAt` is a local `YYYY-MM-DDTHH:mm` string, interpreted by Mapbox as
+ * local time at the route origin — which is what we have and what we want.
+ * Because drive time is billed, quoting traffic for the actual pickup time
+ * rather than for right now is the difference between charging correctly for a
+ * rush-hour airport run and under-charging it.
+ */
 export async function computeDrivingRoute(
   origin: Coordinates,
   destination: Coordinates,
+  departAt?: string,
 ): Promise<RouteResult | null> {
   const token = mapboxToken();
   if (!token) return null;
 
   const pair = `${origin.lon},${origin.lat};${destination.lon},${destination.lat}`;
-  const url = new URL(`${DIRECTIONS_URL}/${pair}`);
-  url.searchParams.set("access_token", token);
-  // We only need the numbers, so skip the geometry entirely.
-  url.searchParams.set("overview", "false");
-  url.searchParams.set("alternatives", "false");
 
-  const response = await fetch(url, { cache: "no-store" });
+  const build = (withDepartAt: boolean) => {
+    const url = new URL(`${DIRECTIONS_URL}/${pair}`);
+    url.searchParams.set("access_token", token);
+    // We only need the numbers, so skip the geometry entirely.
+    url.searchParams.set("overview", "false");
+    url.searchParams.set("alternatives", "false");
+    if (withDepartAt && departAt) url.searchParams.set("depart_at", departAt);
+    return url;
+  };
+
+  let response = await fetch(build(true), { cache: "no-store" });
+
+  // Mapbox rejects depart_at that is in the past or too far ahead. A pickup
+  // three months out should still get a quote, just without traffic for that
+  // exact moment, so retry once without it rather than failing the quote.
+  if (!response.ok && departAt) {
+    console.warn(
+      "Directions rejected depart_at; retrying without it",
+      response.status,
+    );
+    response = await fetch(build(false), { cache: "no-store" });
+  }
 
   if (!response.ok) {
     console.error(

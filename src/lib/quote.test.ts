@@ -50,54 +50,110 @@ describe("isAfterHours", () => {
   });
 });
 
-describe("calculateQuote — transfers", () => {
-  it("charges base plus mileage on a normal trip", () => {
-    // Far enough out that the minimum fare cannot be what is binding.
-    const miles = (vehicle.minimumFare / vehicle.perMileRate) * 2;
+describe("calculateQuote — transfers bill time and distance", () => {
+  /** Big enough that any configured minimum fare cannot be what is binding. */
+  const long = { miles: 40, durationMinutes: 60 };
 
+  it("charges base plus mileage plus drive time", () => {
     const quote = calculateQuote({
       tripType: "transfer",
-      miles,
+      ...long,
       pickupAt: "2026-08-20T12:00",
     });
 
-    expect(quote.lines[0]!.amount).toBeCloseTo(
-      vehicle.baseFare + vehicle.perMileRate * miles,
+    const expected =
+      vehicle.baseFare +
+      vehicle.perMileRate * long.miles +
+      vehicle.perMinuteRate * long.durationMinutes;
+
+    expect(sumLines(quote.lines)).toBeCloseTo(expected, 2);
+  });
+
+  it("shows distance and drive time as separate lines", () => {
+    const quote = calculateQuote({
+      tripType: "transfer",
+      ...long,
+      pickupAt: "2026-08-20T12:00",
+    });
+
+    const distance = quote.lines.find((l) => /^Distance/.test(l.label));
+    const time = quote.lines.find((l) => /^Drive time/.test(l.label));
+
+    expect(distance?.amount).toBeCloseTo(
+      vehicle.perMileRate * long.miles,
+      2,
+    );
+    expect(time?.amount).toBeCloseTo(
+      vehicle.perMinuteRate * long.durationMinutes,
       2,
     );
   });
 
-  it("never prices a short trip below the minimum fare", () => {
-    const quote = calculateQuote({
-      tripType: "transfer",
-      miles: 0.5,
-      pickupAt: "2026-08-20T12:00",
-    });
-
-    expect(quote.lines[0]!.amount).toBe(vehicle.minimumFare);
-    expect(quote.lines[0]!.note).toMatch(/minimum/i);
-  });
-
-  it("grows monotonically with distance", () => {
-    const cheap = calculateQuote({
+  it("grows with distance when time is held constant", () => {
+    const near = calculateQuote({
       tripType: "transfer",
       miles: 10,
+      durationMinutes: 30,
       pickupAt: "2026-08-20T12:00",
     });
-    const dear = calculateQuote({
+    const far = calculateQuote({
       tripType: "transfer",
       miles: 40,
+      durationMinutes: 30,
       pickupAt: "2026-08-20T12:00",
     });
 
-    expect(dear.total).toBeGreaterThan(cheap.total);
+    expect(far.total).toBeGreaterThan(near.total);
   });
 
-  it("treats a missing distance as zero rather than NaN", () => {
+  it("grows with drive time when distance is held constant", () => {
+    // Same route, rush hour versus empty roads. Time-based pricing means these
+    // must differ, or the surcharge for hard traffic silently vanishes.
+    const quiet = calculateQuote({
+      tripType: "transfer",
+      miles: 15,
+      durationMinutes: 20,
+      pickupAt: "2026-08-20T12:00",
+    });
+    const rushHour = calculateQuote({
+      tripType: "transfer",
+      miles: 15,
+      durationMinutes: 50,
+      pickupAt: "2026-08-20T12:00",
+    });
+
+    expect(rushHour.total).toBeGreaterThan(quiet.total);
+    expect(rushHour.total - quiet.total).toBeCloseTo(
+      vehicle.perMinuteRate * 30 * (1 + surcharges.gratuityRate),
+      2,
+    );
+  });
+
+  it("respects a minimum fare when one is configured", () => {
+    const quote = calculateQuote({
+      tripType: "transfer",
+      miles: 0.2,
+      durationMinutes: 1,
+      pickupAt: "2026-08-20T12:00",
+    });
+
+    expect(quote.lines[0]!.amount).toBeGreaterThanOrEqual(
+      vehicle.minimumFare,
+    );
+    if (vehicle.minimumFare > 0) {
+      expect(quote.lines[0]!.note).toMatch(/minimum/i);
+      // A binding minimum must collapse to one line, or the component lines
+      // would not add up to the amount actually charged.
+      expect(quote.lines.filter((l) => /Distance|Drive time/.test(l.label)))
+        .toHaveLength(0);
+    }
+  });
+
+  it("treats missing distance and time as zero rather than NaN", () => {
     const quote = calculateQuote({ tripType: "transfer" });
 
     expect(Number.isFinite(quote.total)).toBe(true);
-    expect(quote.total).toBeGreaterThan(0);
+    expect(quote.total).toBeGreaterThanOrEqual(0);
   });
 });
 
@@ -131,6 +187,7 @@ describe("calculateQuote — surcharges and totals", () => {
   const base = {
     tripType: "transfer" as const,
     miles: 20,
+    durationMinutes: 35,
     pickupAt: "2026-08-20T12:00",
   };
 
@@ -189,7 +246,12 @@ describe("calculateQuote — surcharges and totals", () => {
   });
 
   it("returns amounts rounded to whole cents", () => {
-    const quote = calculateQuote({ ...base, miles: 17.3, extraStops: 1 });
+    const quote = calculateQuote({
+      ...base,
+      miles: 17.3,
+      durationMinutes: 27,
+      extraStops: 1,
+    });
 
     for (const value of [quote.subtotal, quote.gratuity, quote.total]) {
       expect(Math.round(value * 100)).toBeCloseTo(value * 100, 6);

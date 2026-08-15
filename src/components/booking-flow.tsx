@@ -574,7 +574,7 @@ export function BookingFlow() {
                     <br />
                     {result.miles.toFixed(1)} miles
                     {result.durationMinutes
-                      ? ` · about ${result.durationMinutes} minutes in normal traffic`
+                      ? ` · about ${result.durationMinutes} minutes with traffic at your pickup time`
                       : ""}
                   </>
                 ) : null}
