@@ -32,6 +32,12 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# Also catch dotless variants. `.env*` requires the leading dot, so a file
+# saved as `env.local` slips straight past it and into a commit — which is
+# exactly how a Mapbox token reached this repo once.
+env
+env.*
+*.env
 # ...but the template carries no secrets and documents what to set.
 !.env.example
 
