@@ -100,14 +100,13 @@ export default function AboutPage() {
                   that private transportation should be as consistent as the
                   meetings it delivers you to. Not a fleet with a call center
                   attached, and not a marketplace routing you to whoever bid
-                  lowest — one operation, one standard, and a name attached to
-                  every reservation.
+                  lowest.
                 </p>
                 <p>
                   That focus is deliberate. A larger operator can send whichever
                   contractor is nearest and hope the morning goes well. We
-                  can&rsquo;t, and don&rsquo;t want to. The car is detailed
-                  before every trip, the route is planned against the traffic
+                  won&rsquo;t. The car is detailed before every trip, the route
+                  is planned against the traffic
                   you&rsquo;ll actually meet, and the arrival is early. It is a
                   harder way to run a business and a considerably better way to
                   be a passenger.
