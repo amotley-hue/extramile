@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vercel's build output — generated launchers and bundled client chunks,
+    // none of it ours to lint.
+    ".vercel/**",
   ]),
 ]);
 
