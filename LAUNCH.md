@@ -21,6 +21,13 @@ Google Maps usage that will almost certainly stay inside the free monthly credit
 Verified available at the time of writing. Availability changes; if it's gone,
 `theextramilelimo.com` and `ridetheextramile.com` were also free.
 
+**Register it in Craig's name, on Craig's card.** The domain is the business —
+email, website and Google listing all hang off it. If it sits in someone else's
+account then a forgotten renewal, a lost password or a parted-ways developer
+takes the whole business offline, and recovering a domain from a third party is
+genuinely hard. Whoever does the technical setup can be granted DNS access
+without owning the registration.
+
 1. Go to [Cloudflare Registrar](https://dash.cloudflare.com) (at-cost pricing,
    ~$10/yr, free WHOIS privacy, no upsell funnel) or Namecheap if you'd rather.
    **Avoid GoDaddy** — the renewal pricing and the upsells aren't worth it.
