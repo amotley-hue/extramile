@@ -104,6 +104,11 @@ public/images/README.md   What photos to shoot and where they go
 - **Prices are recalculated server-side on submit.** The number the browser
   posts is treated as display only. A posted price is an offer from the
   customer, not a rate Craig agreed to.
+- **Quotes are firm, and drive time is a prediction.** Trips bill on time as
+  well as distance, so a traffic overrun costs Craig and a clean run earns him
+  the difference. That is a deliberate business decision, not an oversight —
+  certainty is what this service sells. The lever if it ever stops paying is a
+  padding factor on predicted drive time, never billing actual elapsed time.
 - **The Mapbox token never reaches the browser.** Every Mapbox call happens in a
   route handler. That's also why the token carries no URL restriction — there is
   no referrer to restrict against, so its secrecy is the control.

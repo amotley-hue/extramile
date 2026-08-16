@@ -17,6 +17,17 @@
  *  actual pickup time — a 7am airport run prices higher than the same route at
  *  11pm, which is the honest answer.
  *
+ *  THE QUOTE IS FIRM. The drive time is a prediction, so a trip that hits an
+ *  accident on 285 costs Craig the overrun, and one that runs clean earns him
+ *  the difference. That is deliberate: certainty is the thing this business
+ *  sells, and over many trips the overruns and underruns broadly cancel.
+ *
+ *  Do not "fix" this by billing actual elapsed time — the site promises in
+ *  several places that the quoted price is the price paid, and breaking that
+ *  quietly is worse than any traffic loss. If overruns ever stop cancelling
+ *  out, the right lever is a padding factor on predicted drive time, which
+ *  stays invisible to the customer and keeps the price firm.
+ *
  *  Hourly charters price as: hourlyRate x hours (>= minimumHours), then the
  *  same surcharges and gratuity.
  *
