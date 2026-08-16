@@ -16,7 +16,7 @@ const columns = [
   {
     heading: "Company",
     links: [
-      { href: "/about", label: "About Craig" },
+      { href: "/about", label: "About us" },
       { href: "/faq", label: "Questions" },
       { href: "/contact", label: "Contact" },
       { href: "/book", label: "Get a quote" },
@@ -37,8 +37,7 @@ export function SiteFooter() {
               Limousine Service
             </p>
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-muted">
-              A private chauffeur service in Atlanta, owned and driven by{" "}
-              {business.owner}.
+              Private chauffeur service for metro Atlanta and North Georgia.
             </p>
           </div>
 
@@ -61,7 +60,7 @@ export function SiteFooter() {
           ))}
 
           <div>
-            <p className="eyebrow mb-5">Reach Craig</p>
+            <p className="eyebrow mb-5">Reservations</p>
             <ul className="space-y-3">
               <li>
                 <a

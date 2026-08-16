@@ -4,18 +4,27 @@ import { ButtonLink, Section, SectionHeading } from "@/components/ui";
 import { business } from "@/lib/business";
 
 export const metadata: Metadata = {
-  title: "About Craig Mason",
+  title: "About",
   description:
-    "The Extra Mile Limousine Service is owned and driven by Craig Mason — an Atlanta chauffeur service built on one person being accountable for every trip.",
+    "The Extra Mile Limousine Service is an Atlanta chauffeur service founded by Craig Mason, built on one standard applied to every reservation.",
   alternates: { canonical: "/about" },
 };
 
 /*
- * TODO(craig): the two paragraphs marked below are written to be true of the
- * business as described, but they are deliberately non-specific because we
- * don't yet have your details. Send over:
+ * Voice note: the site speaks as a company — "we", "your chauffeur" — rather
+ * than narrating Craig performing each task, which is what an enterprise
+ * client expects to read. Craig appears here as founder, which is a credential,
+ * not an operational detail.
+ *
+ * The line not to cross: never imply a fleet or a team of chauffeurs. "We" is
+ * the company's voice and is accurate for a company of one; "our chauffeurs"
+ * plural would not be.
+ *
+ * TODO(craig): the biography below is written to be true of the business as
+ * described, but is deliberately non-specific because we don't have the
+ * details. Send over:
  *   - how long you've been driving professionally, and what you did before
- *   - why you started The Extra Mile
+ *   - why you founded The Extra Mile
  *   - anything notable: certifications, defensive driving, executive protection
  *   - a headshot for this page (see public/images/README.md)
  * Nothing here claims a credential you haven't given us. Keep it that way.
@@ -24,11 +33,11 @@ export const metadata: Metadata = {
 const principles = [
   {
     title: "Answer the phone.",
-    body: "Not a call center, not a form that disappears. When you call The Extra Mile, Craig answers — or calls you back quickly enough that it doesn't matter.",
+    body: "Not a call center, not a form that disappears into a queue. Calls reach someone who can actually confirm your reservation — or get a callback quickly enough that it doesn't matter.",
   },
   {
     title: "Be early.",
-    body: "On time is a coin flip. Craig plans the route, checks the traffic, and is in position before he needs to be. You should never be the one waiting.",
+    body: "On time is a coin flip. The route is planned, the traffic is checked, and the car is in position before it needs to be. You should never be the one waiting.",
   },
   {
     title: "Quote it honestly.",
@@ -48,8 +57,8 @@ export default function AboutPage() {
           <div className="reveal max-w-3xl">
             <p className="eyebrow mb-7">About</p>
             <h1 className="display-xl text-[3rem] md:text-[4.5rem]">
-              One name
-              <span className="block italic text-brass">on the door.</span>
+              A standard,
+              <span className="block italic text-brass">not a dispatch.</span>
             </h1>
           </div>
         </div>
@@ -80,32 +89,35 @@ export default function AboutPage() {
 
             <div>
               <SectionHeading
-                eyebrow="The owner"
-                title="Craig Mason drives every trip he books."
+                eyebrow="Founded by Craig Mason"
+                title="Accountability you can put a name to."
               />
 
               <div className="reveal mt-8 space-y-5 text-[15px] leading-relaxed text-muted">
                 {/* TODO(craig): replace with your actual story — see note above. */}
                 <p>
-                  The Extra Mile is not a fleet with a call center attached. It
-                  is one chauffeur, one set of vehicles, and one person whose
-                  name is on every reservation. When you book, Craig is the one
-                  who confirms it. When you land, Craig is the one at the curb.
+                  The Extra Mile was founded on a straightforward proposition:
+                  that private transportation should be as consistent as the
+                  meetings it delivers you to. Not a fleet with a call center
+                  attached, and not a marketplace routing you to whoever bid
+                  lowest — one operation, one standard, and a name attached to
+                  every reservation.
                 </p>
                 <p>
-                  That constraint is deliberate. A larger operation can send
-                  whoever is nearest and hope it goes well. Craig can&rsquo;t
-                  hide behind a dispatcher, so the standard has to hold on every
-                  single trip — the car detailed, the route planned, the arrival
-                  early. It is a harder way to run a business and a much better
-                  way to be a passenger.
+                  That focus is deliberate. A larger operator can send whichever
+                  contractor is nearest and hope the morning goes well. We
+                  can&rsquo;t, and don&rsquo;t want to. The car is detailed
+                  before every trip, the route is planned against the traffic
+                  you&rsquo;ll actually meet, and the arrival is early. It is a
+                  harder way to run a business and a considerably better way to
+                  be a passenger.
                 </p>
                 <p>
-                  Most of his work is regulars: executives who fly the same
-                  route every month, families who have stopped calling anyone
-                  else for the airport, and the occasional wedding where
-                  everything has to run to the minute. They stay because they
-                  never have to explain themselves twice.
+                  Most of the work is repeat: executives flying the same route
+                  each month, corporate accounts whose assistants have stopped
+                  shopping around, families who no longer call anyone else for
+                  the airport, and weddings that have to run to the minute. They
+                  stay because they never have to explain themselves twice.
                 </p>
               </div>
 
@@ -115,7 +127,7 @@ export default function AboutPage() {
                   had to think about how.&rdquo;
                 </p>
                 <footer className="mt-5 text-[0.6875rem] uppercase tracking-[0.2em] text-brass">
-                  {business.owner}
+                  {business.owner} — {business.ownerRole}
                 </footer>
               </blockquote>
             </div>

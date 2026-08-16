@@ -165,7 +165,7 @@ export function BookingFlow() {
   function validateTrip(): boolean {
     const next: Record<string, string> = {};
     if (pickup.address.trim().length < 3)
-      next.pickup = "Where should Craig pick you up?";
+      next.pickup = "Where should we collect you?";
     if (tripType === "transfer" && dropoff.address.trim().length < 3)
       next.dropoff = "Where are you headed?";
     if (!pickupAt) next.pickupAt = "Choose a date and time.";
@@ -213,7 +213,7 @@ export function BookingFlow() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       setFormError(
-        "We couldn't reach the pricing service. Please try again, or call Craig directly.",
+        "We couldn't reach the pricing service. Please try again, or call us directly.",
       );
     } finally {
       setQuoting(false);
@@ -278,7 +278,7 @@ export function BookingFlow() {
         if (data.fields) setErrors(data.fields);
         setFormError(
           data.error ??
-            "Something went wrong sending your request. Please call Craig.",
+            `Something went wrong sending your request. Please call ${business.phone}.`,
         );
         return;
       }
@@ -292,7 +292,7 @@ export function BookingFlow() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       setFormError(
-        `We couldn't send your request. Please call or text Craig at ${business.phone}.`,
+        `We couldn't send your request. Please call or text ${business.phone}.`,
       );
     } finally {
       setSubmitting(false);
@@ -310,8 +310,8 @@ export function BookingFlow() {
           Request received
         </h2>
         <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-muted">
-          Craig confirms every reservation personally — usually within a couple
-          of hours. Your reference is{" "}
+          Every reservation is confirmed personally — usually within a couple of
+          hours. Your reference is{" "}
           <span className="text-brass">{confirmation.reference}</span>.
         </p>
 
@@ -329,7 +329,7 @@ export function BookingFlow() {
             ? "A copy is on its way to your inbox."
             : "Keep your reference handy — email confirmation is not switched on yet."}{" "}
           This is a request, not a confirmed reservation. Your trip is booked
-          once Craig confirms.
+          once we confirm it.
         </p>
 
         <a
@@ -486,7 +486,7 @@ export function BookingFlow() {
                   extraStops > 0 && surcharges.perExtraStop > 0
                     ? `+${formatUSD(surcharges.perExtraStop * extraStops)}`
                     : extraStops > 0
-                      ? "No charge — Craig just needs to know."
+                      ? "No charge — we just need to know."
                       : undefined
                 }
               >
@@ -519,8 +519,8 @@ export function BookingFlow() {
                     Meet me inside the terminal
                   </span>
                   <span className="mt-1.5 block text-xs leading-relaxed text-faint">
-                    Craig parks, meets you at baggage claim with a name sign,
-                    and helps with your bags. +
+                    Your chauffeur parks, meets you at baggage claim with a name
+                    sign, and helps with your bags. +
                     {formatUSD(surcharges.meetAndGreet)}
                   </span>
                 </span>
@@ -570,7 +570,7 @@ export function BookingFlow() {
                 {formatUSD(quote.total)}
               </p>
               <p className="mt-5 text-sm text-muted">
-                {vehicleFullLabel()} · chauffeured by {business.owner}
+{vehicleFullLabel()} · privately chauffeured
                 {result?.miles !== undefined ? (
                   <>
                     <br />
@@ -620,7 +620,7 @@ export function BookingFlow() {
                 {result?.message}
               </p>
               <p className="mt-5 text-sm text-muted">
-                {vehicleFullLabel()} · chauffeured by {business.owner}
+{vehicleFullLabel()} · privately chauffeured
               </p>
             </div>
           )}
@@ -673,7 +673,7 @@ export function BookingFlow() {
                 label="Passengers"
                 hint={
                   passengers > vehicle.passengers
-                    ? `The ${vehicle.name} seats ${vehicle.passengers} — Craig will confirm arrangements.`
+                    ? `The ${vehicle.name} seats ${vehicle.passengers} — we'll confirm arrangements with you.`
                     : undefined
                 }
               >
@@ -712,7 +712,7 @@ export function BookingFlow() {
             {isAirportTrip ? (
               <Field
                 label="Flight number"
-                hint="Optional. Craig watches your flight and adjusts for delays."
+                hint="Optional. We monitor your flight and adjust for delays."
               >
                 {(props) => (
                   <input
@@ -727,7 +727,7 @@ export function BookingFlow() {
             ) : null}
 
             <Field
-              label="Anything Craig should know"
+              label="Anything we should know"
               hint="Car seats, a stop on the way, a preferred route, the occasion."
             >
               {(props) => (
@@ -767,7 +767,7 @@ export function BookingFlow() {
           </Button>
 
           <p className="mt-5 text-center text-xs leading-relaxed text-faint">
-            No payment now. Craig confirms every reservation personally, then
+            No payment now. Every reservation is confirmed personally, then
             you&rsquo;re booked.
           </p>
         </form>

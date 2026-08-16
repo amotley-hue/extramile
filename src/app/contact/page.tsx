@@ -5,7 +5,7 @@ import { business, serviceAreas } from "@/lib/business";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: `Call or text ${business.phone} to reach Craig Mason directly, or request an instant quote online. Serving metro Atlanta 24 hours a day by reservation.`,
+  description: `Call or text ${business.phone} to reach our reservations line, or request an instant quote online. Serving metro Atlanta 24 hours a day by reservation.`,
   alternates: { canonical: "/contact" },
 };
 
@@ -17,11 +17,11 @@ export default function ContactPage() {
           <div className="reveal max-w-3xl">
             <p className="eyebrow mb-7">Contact</p>
             <h1 className="display-xl text-[3rem] md:text-[4.5rem]">
-              You&rsquo;ll be talking
-              <span className="block italic text-brass">to Craig.</span>
+              A direct line,
+              <span className="block italic text-brass">not a queue.</span>
             </h1>
             <p className="mt-10 max-w-xl text-base leading-[1.75] text-muted md:text-lg">
-              No queue, no dispatcher, no ticket number.
+              No hold music, no dispatcher, no ticket number.
             </p>
           </div>
         </div>
@@ -34,7 +34,7 @@ export default function ContactPage() {
               <SectionHeading
                 eyebrow="Reach him"
                 title="The fastest way is the phone."
-                lede="Call or text — either reaches Craig directly. For anything within the next few hours, always call."
+                lede="Call or text — either reaches us directly. For anything within the next few hours, always call."
               />
 
               <div className="reveal mt-12">
@@ -86,8 +86,8 @@ export default function ContactPage() {
                   <div>
                     <p className="text-sm text-cream">Service area</p>
                     <p className="mt-1 text-sm leading-relaxed text-muted">
-                      {business.serviceAreaLabel}. Craig comes to you — there is
-                      no office to visit.
+                      {business.serviceAreaLabel}. We come to you — there is no
+                      office to visit.
                     </p>
                   </div>
                 </div>
@@ -103,7 +103,7 @@ export default function ContactPage() {
                 <p className="mt-7 text-[15px] leading-[1.75] text-muted">
                   The instant quote gives you a real, all-in price in about a
                   minute — before you hand over a phone number, and without
-                  creating an account. Craig gets the request the moment you
+                  creating an account. The request reaches us the moment you
                   send it.
                 </p>
                 <div className="mt-10">

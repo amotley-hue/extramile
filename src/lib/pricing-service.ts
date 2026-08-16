@@ -28,10 +28,10 @@ export interface PricedTrip {
 }
 
 const UNCONFIGURED =
-  "Instant pricing is not switched on yet. Send the trip through and Craig will confirm your rate personally.";
+  "Instant pricing is not switched on yet. Send the trip through and we will confirm your rate personally.";
 
 const UNRESOLVED =
-  "We couldn't measure that route automatically. Send the trip through and Craig will confirm your rate personally.";
+  "We couldn't measure that route automatically. Send the trip through and we will confirm your rate personally.";
 
 /** Airport status the customer's own input implies, before any lookup. */
 function impliedAirport(trip: Trip): boolean {

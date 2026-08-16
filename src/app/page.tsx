@@ -8,7 +8,7 @@ const services = [
   {
     title: "Airport transfers",
     href: "/services#airport",
-    body: "ATL, PDK, and the private FBOs. Craig tracks your flight, adjusts for delays, and is waiting when you land — not circling the cell lot.",
+    body: "ATL, PDK, and the private FBOs. We track your flight, adjust for delays, and are waiting when you land — not circling the cell lot.",
   },
   {
     title: "Corporate travel",
@@ -29,8 +29,8 @@ const services = [
 
 const differences = [
   {
-    title: "One owner. One standard.",
-    body: "Most Atlanta services route you to whichever contractor is closest. Here, the person who answers the phone is the person who confirms your trip and holds the door. Craig Mason owns The Extra Mile and drives it.",
+    title: "One standard, every reservation.",
+    body: "Most Atlanta services route you to whichever contractor is free that morning, and the experience moves with them. Here it does not move. The same vehicle, the same preparation, the same chauffeur — on every trip you book, without exception.",
   },
   {
     title: "The price you're quoted is the price you pay.",
@@ -38,7 +38,7 @@ const differences = [
   },
   {
     title: "Early is the only version of on time.",
-    body: "Craig arrives ahead of schedule, every time. For airport arrivals that means watching the actual flight, not the printed one — and waiting through the delay without restarting the clock.",
+    body: "Your chauffeur is in position ahead of schedule, every time. For airport arrivals that means watching the actual flight, not the printed one — and waiting through the delay without restarting the clock.",
   },
 ];
 
@@ -52,8 +52,8 @@ const steps = [
     body: "All in, gratuity included, before you give up a phone number.",
   },
   {
-    title: "Craig confirms",
-    body: "Personally, usually within a couple of hours. Then you're set.",
+    title: "We confirm",
+    body: "Personally reviewed, usually within a couple of hours. Then you're set.",
   },
 ];
 
@@ -70,16 +70,14 @@ export default function HomePage() {
             </p>
 
             <h1 className="display-xl text-[3rem] sm:text-[4.5rem] lg:text-[6rem]">
-              You booked a chauffeur.
-              <span className="mt-1 block italic text-brass">
-                You get the owner.
-              </span>
+              Arrive precisely
+              <span className="mt-1 block italic text-brass">as arranged.</span>
             </h1>
 
             <p className="mt-12 max-w-lg text-lg leading-[1.75] text-muted">
-              The Extra Mile is {business.owner} — airport transfers, corporate
-              travel, and hourly charters across metro Atlanta, driven
-              personally and priced without surprises.
+              Private chauffeur service for metro Atlanta — airport transfers,
+              corporate travel, and hourly charters, quoted in full before you
+              book and held to a standard that does not move.
             </p>
 
             <div className="mt-14 flex flex-col items-start gap-8 sm:flex-row sm:items-center sm:gap-10">
@@ -335,7 +333,7 @@ export default function HomePage() {
             <SectionHeading
               eyebrow="Airports"
               title="Every runway in the metro."
-              lede="Commercial or private, Craig knows the terminal, the ramp, and which door actually gets you out fastest."
+              lede="Commercial or private, we know the terminal, the ramp, and which door actually gets you out fastest."
             />
 
             <ul>
@@ -366,7 +364,7 @@ export default function HomePage() {
       <Section className="!pb-44">
         <div className="container-page text-center">
           <h2 className="reveal display-xl mx-auto max-w-3xl text-[2.75rem] md:text-[4rem]">
-            Tell Craig where
+            Tell us where
             <span className="block italic text-brass">you&rsquo;re going.</span>
           </h2>
           <p className="reveal mx-auto mt-9 max-w-md text-base leading-[1.75] text-muted md:text-lg">

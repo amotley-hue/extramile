@@ -6,7 +6,7 @@ import { vehicle, vehicleLabel } from "@/lib/rates";
 
 export const metadata: Metadata = {
   title: "Vehicle details",
-  description: `A late-model luxury SUV seating ${vehicle.passengers}, detailed before every trip and driven by owner Craig Mason. Private chauffeur service across metro Atlanta.`,
+  description: `A late-model luxury SUV seating ${vehicle.passengers}, detailed before every trip. Private chauffeur service across metro Atlanta.`,
   alternates: { canonical: "/vehicle" },
 };
 
@@ -137,9 +137,9 @@ export default function VehiclePage() {
               </ul>
 
               <p className="mt-10 text-sm leading-relaxed text-faint">
-                Traveling with a larger group? Call {business.phone} — Craig
-                will tell you honestly whether he can cover it, or point you to
-                someone reputable who can.
+                Traveling with a larger group? Call {business.phone} and
+                we&rsquo;ll tell you honestly whether we can cover it, or point
+                you to someone reputable who can.
               </p>
             </div>
           </div>

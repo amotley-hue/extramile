@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: `%s · ${business.fullName}`,
   },
   description:
-    "Atlanta private chauffeur and black car service. Airport transfers, corporate travel, and hourly charters — quoted instantly, driven personally by owner Craig Mason.",
+    "Atlanta private chauffeur and black car service. Airport transfers, corporate travel, and hourly charters — quoted instantly, all-in, with gratuity included.",
   keywords: [
     "Atlanta limo service",
     "Atlanta chauffeur service",

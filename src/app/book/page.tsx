@@ -17,12 +17,12 @@ const assurances = [
     body: "Every quote is all-in: fare, fees, and gratuity. No surge pricing, and no number that changes between the quote and the invoice.",
   },
   {
-    title: "Craig confirms personally",
-    body: "Requests come straight to Craig, not a dispatch queue. He confirms — usually within a couple of hours — and you deal with the same person who drives you.",
+    title: "Personally confirmed",
+    body: "Requests are reviewed individually, not dropped into a dispatch queue. You'll have a confirmation — usually within a couple of hours — from the same people who handle the trip itself.",
   },
   {
     title: "Nothing is charged today",
-    body: "Send the request without entering a card. You are booked once Craig confirms.",
+    body: "Send the request without entering a card. You are booked once the reservation is confirmed.",
   },
 ];
 
@@ -95,8 +95,8 @@ export default function BookPage() {
               Traveling in the next few hours?
             </p>
             <p className="max-w-md text-sm leading-[1.75] text-muted">
-              Skip the form. Call Craig directly and he&rsquo;ll tell you right
-              away whether he can cover it.
+              Skip the form. Call the reservations line and we&rsquo;ll confirm
+              availability right away.
             </p>
             <a
               href={`tel:${business.phoneHref}`}

@@ -18,9 +18,9 @@ const services = [
     title: "Airport transfers",
     lede: "The trip you notice least is the one that went right.",
     body: [
-      `Craig monitors your actual flight, not the time printed on your itinerary. If you land early he's already there; if you sit on the tarmac for an hour, the clock doesn't restart and the price doesn't move.`,
+      `We monitor your actual flight, not the time printed on your itinerary. Land early and your car is already there; sit on the tarmac for an hour and the clock doesn't restart, nor does the price move.`,
       `Domestic arrivals include ${waitTimePolicy.airportDomesticMinutes} minutes of free wait time from touchdown, international ${waitTimePolicy.airportInternationalMinutes}. Curbside pickup is standard. If you'd rather be met at baggage claim with a name sign and a hand with the bags, add meet-and-greet when you book.`,
-      `For departures, Craig builds your pickup time backward from the checkpoint — factoring the hour, the day, and which side of the terminal your airline actually uses.`,
+      `For departures, your pickup time is built backward from the checkpoint — factoring the hour, the day, and which side of the terminal your airline actually uses.`,
     ],
     points: [
       "Live flight monitoring and delay adjustment",
@@ -35,7 +35,7 @@ const services = [
     title: "Corporate travel",
     lede: "For the client you cannot afford to keep waiting.",
     body: [
-      `When an executive or a client flies into Atlanta, the ride from the airport is the first impression your company makes. Craig treats it that way — vehicle detailed, chauffeur in a suit, and a phone number your assistant can actually reach.`,
+      `When an executive or a client flies into Atlanta, the ride from the airport is the first impression your company makes. We treat it that way — vehicle detailed, chauffeur in a suit, and a phone number your assistant can actually reach.`,
       `For recurring travel, roadshows, and multi-stop days, you get one chauffeur across the whole itinerary. He learns the preferences — the temperature, the route, the fact that the 3pm always runs long — and stops needing to be told.`,
       `Invoicing is itemized and consistent, so expense reports go through without a conversation.`,
     ],
@@ -69,7 +69,7 @@ const services = [
     title: "Events & special occasions",
     lede: "The part of the night nobody should have to organize.",
     body: [
-      `Weddings, anniversaries, birthdays, proms, concerts, and the dinner where everyone should be able to have a glass of wine. Craig coordinates timing with the venue directly so the car is where it needs to be without anyone in the party checking a watch.`,
+      `Weddings, anniversaries, birthdays, proms, concerts, and the dinner where everyone should be able to have a glass of wine. We coordinate timing with the venue directly, so the car is where it needs to be without anyone in the party checking a watch.`,
       `Tell him the occasion when you book. Small things — where to stage the vehicle for photos, which door to use, keeping the surprise a surprise — are the difference between transportation and an evening that ran itself.`,
     ],
     points: [
@@ -157,7 +157,7 @@ export default function ServicesPage() {
         <div className="container-page">
           <SectionHeading
             eyebrow="Coverage"
-            title="Where Craig runs."
+            title="Where we run."
             lede="Metro Atlanta and North Georgia, plus every airport worth naming."
             align="center"
           />
@@ -192,7 +192,7 @@ export default function ServicesPage() {
               className="mt-8 inline-flex items-center gap-2.5 border-b border-brass/40 pb-1.5 text-sm text-cream transition-colors hover:border-brass hover:text-brass"
             >
               <Phone className="size-4 text-brass" strokeWidth={1.5} aria-hidden />
-              Ask Craig — {business.phone}
+              Speak with us — {business.phone}
             </a>
           </div>
         </div>

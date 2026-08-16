@@ -11,7 +11,13 @@ export const business = {
   fullName: "The Extra Mile Limousine Service",
   tagline: "Atlanta's private chauffeur service.",
   owner: "Craig Mason",
-  ownerRole: "Owner & Chauffeur",
+  /**
+   * Shown on the About page only. The site speaks as a company everywhere else
+   * — "we", "your chauffeur" — because an enterprise client reads a named
+   * individual performing each task as a smaller operation than it wants to
+   * hire. Craig appears as founder, which reads as a credential.
+   */
+  ownerRole: "Founder & Principal Chauffeur",
 
   phone: "678-457-0698",
   /** E.164, for tel: links and SMS */

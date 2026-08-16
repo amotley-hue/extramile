@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 const faqs = [
   {
     q: "How do I book?",
-    a: `Use the instant quote — two addresses and a time gets you a real price for every vehicle, and you can send the request without entering a card. Or just call ${business.phone}. Both reach Craig directly.`,
+    a: `Use the instant quote — two addresses and a time gets you a real price, and you can send the request without entering a card. Or call ${business.phone}. Both reach our reservations line directly.`,
   },
   {
     q: "Is the quote the final price?",
@@ -27,23 +27,23 @@ const faqs = [
   },
   {
     q: "What vehicle will I be in?",
-    a: `A late-model ${vehicleFullLabel()}, seating up to ${vehicle.passengers} with room for ${vehicle.luggage} bags — leather, rear climate control, charging, and chilled water. It's detailed before every trip, and it's the same vehicle every time you book.`,
+    a: `A late-model ${vehicleFullLabel()}, seating up to ${vehicle.passengers} with room for ${vehicle.luggage} bags — leather, rear climate control, charging, and chilled water. It is detailed before every trip, and it is the same vehicle every time you book.`,
   },
   {
     q: "Do I have to pay when I book?",
-    a: "No. Nothing is charged when you send a request. Craig confirms the reservation first, and payment is settled around the trip itself.",
+    a: "No. Nothing is charged when you send a request. The reservation is confirmed first, and payment is settled around the trip itself.",
   },
   {
     q: "How quickly will I hear back?",
-    a: "Usually within a couple of hours, and faster during business hours. If you're traveling in the next few hours, call instead — Craig will tell you immediately whether he can cover it.",
+    a: "Usually within a couple of hours, and faster during business hours. If you're traveling in the next few hours, call instead and we'll confirm availability immediately.",
   },
   {
     q: "What happens if my flight is delayed?",
-    a: `Craig monitors the actual flight, not your scheduled time. Domestic arrivals include ${waitTimePolicy.airportDomesticMinutes} minutes of free wait time from touchdown, international ${waitTimePolicy.airportInternationalMinutes} minutes. A delay does not change your price.`,
+    a: `We monitor the actual flight, not your scheduled time. Domestic arrivals include ${waitTimePolicy.airportDomesticMinutes} minutes of free wait time from touchdown, international ${waitTimePolicy.airportInternationalMinutes} minutes. A delay does not change your price.`,
   },
   {
     q: "Where do you meet me at the airport?",
-    a: "Curbside at arrivals by default — Craig texts you the vehicle and where to walk. If you'd rather be met inside at baggage claim with a name sign and help with the bags, add meet-and-greet when you book.",
+    a: "Curbside at arrivals by default — you'll receive a text with the vehicle and where to walk. If you'd rather be met inside at baggage claim with a name sign and help with the bags, add meet-and-greet when you book.",
   },
   {
     q: "Which airports do you serve?",
@@ -51,7 +51,7 @@ const faqs = [
   },
   {
     q: "How many people can you take?",
-    a: `Up to ${vehicle.passengers} passengers with ${vehicle.luggage} bags. For a larger group, call ${business.phone} — Craig will tell you honestly whether he can cover it, and point you to someone reputable if he can't.`,
+    a: `Up to ${vehicle.passengers} passengers with ${vehicle.luggage} bags. For a larger group, call ${business.phone} — we'll tell you honestly whether we can cover it, and point you to someone reputable if we can't.`,
   },
   {
     q: "Can I book by the hour instead?",
@@ -71,7 +71,7 @@ const faqs = [
   },
   {
     q: "Do you handle corporate accounts?",
-    a: "Yes. Recurring executive travel, client pickups, and roadshows get the same chauffeur throughout, plus itemized invoicing that clears expense reporting without a follow-up call.",
+    a: "Yes. Recurring executive travel, client pickups, and roadshows get the same chauffeur throughout, plus itemized invoicing that clears expense reporting without a follow-up call. Certificates of insurance are available for vendor onboarding.",
   },
   {
     q: "How far will you go?",

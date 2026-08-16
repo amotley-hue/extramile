@@ -225,7 +225,7 @@ export async function sendBookingEmails(
     `
     <h1 style="margin:0 0 14px;color:#0a0c0e;font:600 26px/1.25 Georgia,'Times New Roman',serif;">Thank you, ${esc(booking.name.split(" ")[0])}.</h1>
     <p style="margin:0 0 20px;color:#14181c;font:400 16px/1.65 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;">
-      Your request is with Craig now. He confirms every reservation personally, usually within a couple of hours — sooner during business hours.
+      Your request has been received. Every reservation is confirmed personally, usually within a couple of hours — sooner during business hours.
       Your reference is <strong>${esc(reference)}</strong>.
     </p>
     <p style="margin:0 0 24px;color:#14181c;font:400 16px/1.65 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;">
@@ -239,7 +239,7 @@ export async function sendBookingEmails(
       ${quote ? `<p style="margin:14px 0 0;color:#6b6660;font:400 12px/1.6 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;">${esc(quote.disclaimer)}</p>` : ""}
     </div>
     <p style="margin:22px 0 0;color:#6b6660;font:400 13px/1.6 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;">
-      This is a request, not a confirmed reservation. Your trip is booked once Craig confirms.
+      This is a request, not a confirmed reservation. Your trip is booked once we confirm it.
     </p>
     `,
   );
@@ -256,7 +256,7 @@ export async function sendBookingEmails(
   const customerText = [
     `Thank you, ${booking.name.split(" ")[0]}.`,
     "",
-    `Your request is with Craig. He confirms every reservation personally, usually within a couple of hours.`,
+    `Your request has been received. Every reservation is confirmed personally, usually within a couple of hours.`,
     `Reference: ${reference}`,
     "",
     rowsToText(rows),

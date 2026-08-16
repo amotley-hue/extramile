@@ -76,7 +76,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error:
-          "We couldn't submit your request just now. Please call or text 678-457-0698 and Craig will take care of it directly.",
+          "We couldn't submit your request just now. Please call or text 678-457-0698 and we'll take care of it directly.",
       },
       { status: 503 },
     );

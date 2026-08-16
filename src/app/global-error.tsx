@@ -66,8 +66,8 @@ export default function GlobalError({
           </h1>
 
           <p style={{ color: "#a09a90", margin: "1.25rem 0 0" }}>
-            The site hit an unexpected error. Craig is still reachable — call or
-            text and he&rsquo;ll take your booking directly.
+            The site hit an unexpected error. Our reservations line is still
+            open — call or text and we&rsquo;ll take your booking directly.
           </p>
 
           <a
