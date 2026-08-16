@@ -146,7 +146,7 @@ export interface PlaceSuggestion {
  * a suggestion.
  */
 const AIRPORT_PATTERN =
-  /\b(?:hartsfield|jackson atlanta international|international airport|regional airport|executive airport|municipal airport|airport terminal|\d\s*airport)\b|\bairport\s*(?:north|south|domestic|international)\b|\b(?:ATL|PDK|FTY|RYY)\b/i;
+  /\b(?:jackson atlanta international|international airport|regional airport|executive airport|municipal airport|airport terminal|\d\s*airport)\b|\bairport\s*(?:north|south|domestic|international)\b|\b(?:ATL|PDK|FTY|RYY)\b/i;
 
 export function looksLikeAirport(...parts: (string | undefined)[]): boolean {
   return AIRPORT_PATTERN.test(parts.filter(Boolean).join(" "));

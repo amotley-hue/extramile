@@ -18,6 +18,23 @@ describe("looksLikeAirport", () => {
     expect(looksLikeAirport("DeKalb-Peachtree Airport Terminal")).toBe(true);
   });
 
+  it("does not bill everything named after the airport's namesake", () => {
+    // Live Mapbox results for "Hartsfield" include a dog park, a Waffle House
+    // and several businesses that borrow the name. Matching a bare
+    // "hartsfield" charged all of them the airport surcharge. The airport's own
+    // full name still matches, via "atlanta international".
+    expect(looksLikeAirport("Hartsfield-Jackson Dog Park, Atlanta")).toBe(false);
+    expect(looksLikeAirport("Hartsfield Bar & Grill")).toBe(false);
+    expect(
+      looksLikeAirport("Hartsfield–Jackson Atlanta International Airport"),
+    ).toBe(true);
+    expect(
+      looksLikeAirport(
+        "International Terminal Arrivals, Hartsfield–Jackson Atlanta International Airport (ATL)",
+      ),
+    ).toBe(true);
+  });
+
   it("does not bill a street named after an airport", () => {
     // The original pattern matched a bare "airport" and charged the surcharge
     // to anyone on one of Atlanta's several Airport Roads.
