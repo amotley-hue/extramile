@@ -162,7 +162,7 @@ export const rateAdjustments = {
  *
  * See public/images/README.md for what to buy and how to crop it.
  */
-export const vehiclePhoto: string | null = null;
+export const vehiclePhoto: string | null = "/images/vehicle.png";
 
 /**
  * How the image should sit in its frame.

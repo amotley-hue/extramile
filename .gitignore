@@ -30,6 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# Licensed source artwork. The processed output in public/images is committed;
+# the originals stay local — they are large, and re-distributing them through a
+# repo is not what the licence covers.
+/assets
+
 # env files (can opt-in for committing if needed)
 .env*
 # Also catch dotless variants. `.env*` requires the leading dot, so a file

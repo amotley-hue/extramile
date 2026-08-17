@@ -18,15 +18,23 @@ import {
  * the unfinished page still looks intentional rather than broken.
  */
 
-/** The lit stage: a low pool of brass with a fading grid over it. */
-function Stage() {
+/**
+ * The lit stage: a low pool of brass with a fading grid over it.
+ *
+ * The glow is dimmer and wider behind a cutout than it is on its own. At the
+ * intensity that works for an empty frame, a car standing on it reads as a grey
+ * smudge under the wheels rather than as light — the pool has a visible edge,
+ * and the eye reads any defined shape as dirt.
+ */
+function Stage({ dim = false }: { dim?: boolean }) {
   return (
     <>
       <div
         className="absolute inset-0"
         style={{
-          background:
-            "radial-gradient(ellipse 60% 55% at 50% 88%, rgb(194 161 92 / 0.30) 0%, transparent 62%)",
+          background: dim
+            ? "radial-gradient(ellipse 85% 70% at 50% 92%, rgb(194 161 92 / 0.16) 0%, transparent 72%)"
+            : "radial-gradient(ellipse 60% 55% at 50% 88%, rgb(194 161 92 / 0.30) 0%, transparent 62%)",
         }}
         aria-hidden
       />
@@ -70,7 +78,7 @@ export function VehiclePhoto({
     >
       {/* The stage sits behind a cutout, and is the whole effect when there is
           no image at all. A full-bleed photograph covers it. */}
-      {(!vehiclePhoto || isCutout) && <Stage />}
+      {(!vehiclePhoto || isCutout) && <Stage dim={Boolean(vehiclePhoto)} />}
 
       {vehiclePhoto ? (
         isCutout ? (
@@ -78,8 +86,8 @@ export function VehiclePhoto({
             {/* Contact shadow. Without it the car appears to hover, which is
                 the tell that gives away a pasted-on cutout. */}
             <div
-              className="absolute bottom-[9%] left-1/2 h-[7%] w-[62%] -translate-x-1/2 rounded-[50%] blur-xl"
-              style={{ background: "rgb(0 0 0 / 0.55)" }}
+              className="absolute bottom-[10%] left-1/2 h-[5%] w-[70%] -translate-x-1/2 rounded-[50%] blur-2xl"
+              style={{ background: "rgb(0 0 0 / 0.7)" }}
               aria-hidden
             />
             <Image
