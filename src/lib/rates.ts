@@ -38,15 +38,7 @@
 export interface Vehicle {
   /** What the site calls it. */
   name: string;
-  /**
-   * The actual make and model, e.g. "Cadillac Escalade".
-   *
-   * TODO(craig): fill this in. Left empty on purpose — every place the site
-   * shows the vehicle falls back to the generic name when this is blank, so an
-   * empty string is honest and a guess would not be. Naming the specific
-   * vehicle is worth doing: it is what makes the price feel earned rather than
-   * asserted.
-   */
+  /** The actual make and model shown alongside the generic name. */
   model: string;
   /** Seated passengers, excluding the chauffeur. */
   passengers: number;
@@ -82,7 +74,17 @@ export interface Vehicle {
  */
 export const vehicle: Vehicle = {
   name: "Luxury SUV",
-  model: "",
+  /**
+   * Craig's vehicle. "Yukon XL" is GMC's name for the extended-wheelbase
+   * Yukon — correct this if he uses a different badge.
+   */
+  model: "GMC Yukon XL",
+  /**
+   * TODO(craig): confirm. A Yukon XL seats 7 with the third row up, and 8 on
+   * a bench second row. 6 is the comfortable chauffeured figure with captain's
+   * chairs, but if the car is a 7-seater it is worth saying so — a 7-passenger
+   * enquiry currently gets warned the vehicle is too small.
+   */
   passengers: 6,
   luggage: 6,
   features: [
@@ -111,8 +113,39 @@ export const vehicle: Vehicle = {
    * buys exclusivity — the car is held and turns down other work.
    */
   hourlyRate: 95,
-  minimumHours: 2,
+  minimumHours: 3,
 };
+
+/**
+ * Weekend and last-minute work is priced differently, and those rates are not
+ * confirmed yet.
+ *
+ * Rather than quote a weekday number and let the customer discover the
+ * difference on the invoice — which would break the promise the site makes in
+ * several places — a quote falling into either window carries a visible notice
+ * and the phone number.
+ *
+ * When Craig gives the actual figures, set the rate fields below and these
+ * become priced line items instead of notices. Nothing else has to change.
+ */
+export const rateAdjustments = {
+  /** Day numbers treated as weekend. 0 = Sunday, 6 = Saturday. */
+  weekendDays: [0, 6] as number[],
+  /** A pickup sooner than this many hours away counts as last-minute. */
+  lastMinuteHours: 24,
+
+  /**
+   * Multipliers applied to the fare. null means "not priced yet — show the
+   * notice instead". TODO(craig): supply these and the quote prices them.
+   */
+  weekendSurchargeRate: null as number | null,
+  lastMinuteSurchargeRate: null as number | null,
+
+  weekendNotice:
+    "Weekend rates differ from the price shown. Call to confirm your rate before booking.",
+  lastMinuteNotice:
+    "Same-day and short-notice trips are priced separately. Call to confirm availability and your rate.",
+} as const;
 
 /** "Luxury SUV" when no model is set, "Cadillac Escalade" when it is. */
 export function vehicleLabel(): string {

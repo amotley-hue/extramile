@@ -15,6 +15,8 @@ import {
   type ResolvedPlace,
 } from "./distance";
 import { calculateQuote, type Quote } from "./quote";
+import { rateAdjustments } from "./rates";
+import { departAtParam } from "./distance";
 import type { Trip } from "./validation";
 
 export interface PricedTrip {
@@ -32,6 +34,26 @@ const UNCONFIGURED =
 
 const UNRESOLVED =
   "We couldn't measure that route automatically. Send the trip through and we will confirm your rate personally.";
+
+/**
+ * Whether a pickup falls inside the short-notice window.
+ *
+ * Reading the clock lives here rather than in quote.ts, which stays pure. The
+ * pickup time is converted to a real instant first — comparing a bare local
+ * string against Date.now() would be wrong by however far Atlanta sits from
+ * the server's timezone, which on a 24-hour window is enough to misclassify a
+ * whole evening of bookings.
+ */
+function isLastMinute(pickupAt: string | undefined): boolean {
+  const iso = departAtParam(pickupAt);
+  if (!iso) return false;
+  const pickup = new Date(iso).getTime();
+  if (Number.isNaN(pickup)) return false;
+  const hoursAway = (pickup - Date.now()) / 3_600_000;
+  // A pickup already in the past is someone correcting a mistake, not a
+  // short-notice booking, so it does not trigger the notice.
+  return hoursAway >= 0 && hoursAway < rateAdjustments.lastMinuteHours;
+}
 
 /** Airport status the customer's own input implies, before any lookup. */
 function impliedAirport(trip: Trip): boolean {
@@ -54,6 +76,7 @@ export async function priceTrip(trip: Trip): Promise<PricedTrip> {
         hours: trip.hours,
         pickupAt: trip.pickupAt,
         isAirport,
+        isLastMinute: isLastMinute(trip.pickupAt),
         extraStops: trip.extraStops,
         meetAndGreet: trip.meetAndGreet,
       }),
@@ -125,6 +148,7 @@ export async function priceTrip(trip: Trip): Promise<PricedTrip> {
       durationMinutes: route.durationMinutes,
       pickupAt: trip.pickupAt,
       isAirport,
+      isLastMinute: isLastMinute(trip.pickupAt),
       extraStops: trip.extraStops,
       meetAndGreet: trip.meetAndGreet,
     }),

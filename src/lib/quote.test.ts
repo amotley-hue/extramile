@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { calculateQuote, isAfterHours, localHourOf } from "./quote";
-import { surcharges, vehicle } from "./rates";
+import {
+  calculateQuote,
+  isAfterHours,
+  isWeekendPickup,
+  localHourOf,
+  weekdayOf,
+} from "./quote";
+import { rateAdjustments, surcharges, vehicle } from "./rates";
 
 /**
  * These assert the *shape* of the pricing rules, not specific dollar amounts,
@@ -47,6 +53,71 @@ describe("isAfterHours", () => {
 
   it("does not apply a surcharge when no time was given", () => {
     expect(isAfterHours(undefined)).toBe(false);
+  });
+});
+
+describe("weekend detection", () => {
+  it("reads the day off the date, not the server's timezone", () => {
+    // 12 September 2026 is a Saturday; the 13th a Sunday, the 14th a Monday.
+    expect(weekdayOf("2026-09-12T20:00")).toBe(6);
+    expect(weekdayOf("2026-09-13T09:00")).toBe(0);
+    expect(weekdayOf("2026-09-14T09:00")).toBe(1);
+  });
+
+  it("treats Saturday and Sunday as weekend, weekdays as not", () => {
+    // Late Saturday and early Monday are the cases a timezone slip would move.
+    expect(isWeekendPickup("2026-09-12T23:30")).toBe(true);
+    expect(isWeekendPickup("2026-09-13T12:00")).toBe(true);
+    expect(isWeekendPickup("2026-09-14T00:30")).toBe(false);
+    expect(isWeekendPickup("2026-09-11T18:00")).toBe(false);
+  });
+
+  it("returns null rather than guessing on malformed input", () => {
+    expect(weekdayOf(undefined)).toBeNull();
+    expect(weekdayOf("next Friday")).toBeNull();
+    expect(isWeekendPickup(undefined)).toBe(false);
+  });
+});
+
+describe("unpriced-condition notices", () => {
+  const base = {
+    tripType: "transfer" as const,
+    miles: 20,
+    durationMinutes: 35,
+  };
+
+  it("warns on a weekend pickup while weekend rates are unset", () => {
+    const quote = calculateQuote({ ...base, pickupAt: "2026-09-12T14:00" });
+    expect(quote.notices).toContain(rateAdjustments.weekendNotice);
+  });
+
+  it("says nothing on a weekday", () => {
+    const quote = calculateQuote({ ...base, pickupAt: "2026-09-15T14:00" });
+    expect(quote.notices).not.toContain(rateAdjustments.weekendNotice);
+  });
+
+  it("warns on a short-notice pickup", () => {
+    const quote = calculateQuote({
+      ...base,
+      pickupAt: "2026-09-15T14:00",
+      isLastMinute: true,
+    });
+    expect(quote.notices).toContain(rateAdjustments.lastMinuteNotice);
+  });
+
+  it("can carry both notices at once", () => {
+    const quote = calculateQuote({
+      ...base,
+      pickupAt: "2026-09-12T14:00",
+      isLastMinute: true,
+    });
+    expect(quote.notices).toHaveLength(2);
+  });
+
+  it("does not change the price — a notice is not a surcharge", () => {
+    const weekday = calculateQuote({ ...base, pickupAt: "2026-09-15T14:00" });
+    const weekend = calculateQuote({ ...base, pickupAt: "2026-09-12T14:00" });
+    expect(weekend.total).toBeCloseTo(weekday.total, 2);
   });
 });
 

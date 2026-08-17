@@ -60,7 +60,8 @@ it("probes the Mapbox endpoints the quote depends on", async () => {
   let ok = 0;
   let failed = 0;
   const step = (name: string, good: boolean) => {
-    good ? ok++ : failed++;
+    if (good) ok++;
+    else failed++;
     log(`  ${good ? "PASS" : "FAIL"}  ${name}`);
   };
 

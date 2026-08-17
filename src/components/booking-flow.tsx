@@ -609,6 +609,26 @@ export function BookingFlow() {
                 </div>
               </dl>
 
+              {quote.notices.length > 0 ? (
+                <div className="mx-auto mt-8 max-w-sm border-l-2 border-brass bg-brass-dim px-5 py-4 text-left">
+                  {quote.notices.map((notice) => (
+                    <p
+                      key={notice}
+                      className="text-[13px] leading-relaxed text-cream [&+p]:mt-2.5"
+                    >
+                      {notice}
+                    </p>
+                  ))}
+                  <a
+                    href={`tel:${business.phoneHref}`}
+                    className="mt-3 inline-flex items-center gap-2 text-[13px] font-medium text-brass transition-colors hover:text-brass-bright"
+                  >
+                    <Phone className="size-3.5" aria-hidden />
+                    {business.phone}
+                  </a>
+                </div>
+              ) : null}
+
               <p className="mx-auto mt-8 max-w-sm text-left text-xs leading-relaxed text-faint">
                 {quote.disclaimer}
               </p>

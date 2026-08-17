@@ -6,7 +6,12 @@
  * does arithmetic.
  */
 
-import { quoteDisclaimer, surcharges, vehicle } from "./rates";
+import {
+  quoteDisclaimer,
+  rateAdjustments,
+  surcharges,
+  vehicle,
+} from "./rates";
 
 export type TripType = "transfer" | "hourly";
 
@@ -25,6 +30,14 @@ export interface QuoteInput {
   pickupAt?: string;
   /** True when pickup or dropoff is a commercial airport. */
   isAirport?: boolean;
+  /**
+   * True when the pickup is inside the short-notice window.
+   *
+   * Passed in rather than derived, because deciding it needs the current time
+   * and this module is deliberately pure — same input, same price, on the
+   * server and in a test.
+   */
+  isLastMinute?: boolean;
   /** Additional stops between pickup and dropoff. */
   extraStops?: number;
   /** Chauffeur meets the passenger inside with a name sign. */
@@ -48,6 +61,13 @@ export interface Quote {
   billedHours?: number;
   miles?: number;
   durationMinutes?: number;
+  /**
+   * Conditions that change the price but are not yet priced — weekend and
+   * short-notice work. Shown prominently with the phone number, not buried in
+   * fine print, because the alternative is a customer discovering the
+   * difference after they have been quoted.
+   */
+  notices: string[];
   disclaimer: string;
 }
 
@@ -62,6 +82,26 @@ export function localHourOf(pickupAt: string | undefined): number | null {
   if (!match) return null;
   const hour = Number(match[1]);
   return Number.isInteger(hour) && hour >= 0 && hour <= 23 ? hour : null;
+}
+
+/**
+ * Day of week for a `datetime-local` pickup, 0 = Sunday.
+ *
+ * Built from the string's own parts through Date.UTC so the server's timezone
+ * cannot shift a Saturday-evening pickup into Sunday, or a Monday-morning one
+ * back into the weekend.
+ */
+export function weekdayOf(pickupAt: string | undefined): number | null {
+  if (!pickupAt) return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})T/.exec(pickupAt.trim());
+  if (!match) return null;
+  const [, y, m, d] = match.map(Number) as unknown as number[];
+  return new Date(Date.UTC(y!, m! - 1, d!)).getUTCDay();
+}
+
+export function isWeekendPickup(pickupAt: string | undefined): boolean {
+  const day = weekdayOf(pickupAt);
+  return day !== null && rateAdjustments.weekendDays.includes(day);
 }
 
 export function isAfterHours(pickupAt: string | undefined): boolean {
@@ -166,6 +206,17 @@ export function calculateQuote(input: QuoteInput): Quote {
   const gratuity = round(subtotal * surcharges.gratuityRate);
   const total = round(subtotal + gratuity);
 
+  const notices: string[] = [];
+  if (
+    isWeekendPickup(input.pickupAt) &&
+    rateAdjustments.weekendSurchargeRate === null
+  ) {
+    notices.push(rateAdjustments.weekendNotice);
+  }
+  if (input.isLastMinute && rateAdjustments.lastMinuteSurchargeRate === null) {
+    notices.push(rateAdjustments.lastMinuteNotice);
+  }
+
   return {
     vehicleName: vehicle.name,
     tripType: input.tripType,
@@ -176,6 +227,7 @@ export function calculateQuote(input: QuoteInput): Quote {
     billedHours,
     miles,
     durationMinutes,
+    notices,
     disclaimer: quoteDisclaimer,
   };
 }
