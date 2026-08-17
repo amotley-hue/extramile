@@ -79,13 +79,18 @@ export const vehicle: Vehicle = {
    * Yukon — correct this if he uses a different badge.
    */
   model: "GMC Yukon XL",
+  /** Confirmed by Craig: seven, with the third row up. */
+  passengers: 7,
   /**
-   * TODO(craig): confirm. A Yukon XL seats 7 with the third row up, and 8 on
-   * a bench second row. 6 is the comfortable chauffeured figure with captain's
-   * chairs, but if the car is a 7-seater it is worth saying so — a 7-passenger
-   * enquiry currently gets warned the vehicle is too small.
+   * TODO(craig): confirm this against seven passengers.
+   *
+   * Luggage is the binding constraint at full occupancy, not seats. A Yukon XL
+   * keeps roughly 41 cu ft behind the third row — far better than a standard
+   * Yukon — but seven passengers with a large case each is more like seven
+   * bags, not six. If six is the honest number at full load, the site should
+   * keep saying six; quoting capacity the car doesn't have is the kind of
+   * surprise that happens at the curb, in front of the client.
    */
-  passengers: 6,
   luggage: 6,
   features: [
     "Full-grain leather seating",

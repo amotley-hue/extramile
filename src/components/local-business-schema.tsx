@@ -72,7 +72,7 @@ export function LocalBusinessSchema() {
         itemOffered: {
           "@type": "Service",
           name,
-          description: `${name} in a ${vehicleFullLabel()} seating up to ${vehicle.passengers}, driven by owner ${business.owner}.`,
+          description: `${name} in a ${vehicleFullLabel()} seating up to ${vehicle.passengers}, across metro Atlanta and North Georgia.`,
         },
       })),
     },

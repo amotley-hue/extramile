@@ -92,9 +92,10 @@ export default function VehiclePage() {
             <div className="reveal">
               <p className="eyebrow mb-7">The car</p>
               <p className="text-[15px] leading-[1.8] text-muted">
-                Full-size, extended wheelbase. Room for {vehicle.passengers} and
-                their luggage without anyone negotiating for legroom, and quiet
-                enough at speed to take a call from the back seat.
+                Full-size, extended wheelbase. Seven seats with a third row
+                adults can genuinely use, luggage space behind it rather than on
+                someone&rsquo;s lap, and quiet enough at speed to take a call
+                from the back.
               </p>
             </div>
 
