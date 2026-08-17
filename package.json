@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
+    "photo": "node scripts/add-vehicle-photo.mjs",
     "rates": "vitest run -c vitest.rates.mts --disable-console-intercept",
     "mapbox": "cross-env NODE_OPTIONS=--use-system-ca vitest run -c vitest.rates.mts --disable-console-intercept -t \"probes the Mapbox\"",
     "test:watch": "vitest",

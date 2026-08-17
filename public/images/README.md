@@ -36,16 +36,36 @@ terms before using those commercially.
 
 ### Wiring it in
 
-1. Save the file as `public/images/vehicle.jpg`.
-2. In `src/lib/rates.ts`, change:
+Download the file anywhere, then run:
 
-   ```ts
-   export const vehiclePhoto: string | null = "/images/vehicle.jpg";
-   ```
+```bash
+npm run photo -- "C:/Users/you/Downloads/yukon.jpg"
+```
 
-That is the whole change. Both pages switch from the placeholder to the
-photograph, the darkening and bottom fade are applied automatically, and the
-layout does not move — the placeholder and the image occupy identical frames.
+That copies it into place, sets the `vehiclePhoto` constant, and checks the two
+things stock imagery usually gets wrong — not enough resolution, and an aspect
+ratio too tall to survive the 21:9 crop. It tells you if either is a problem
+rather than letting you find out on the page.
+
+Then `npm run dev` and open `/vehicle` to check where the car sits in the crop.
+
+Doing it by hand is fine too: save as `public/images/vehicle.jpg` and set
+
+```ts
+export const vehiclePhoto: string | null = "/images/vehicle.jpg";
+```
+
+Either way the layout does not move — the placeholder and the image occupy
+identical frames, and the darkening and bottom fade are applied automatically.
+
+### Free sources worth trying first
+
+[Unsplash](https://unsplash.com/s/photos/gmc) and
+[Pexels](https://www.pexels.com/license/) both license for commercial use with
+no attribution required. Selection is thin for a specific trim, so if neither
+has a clean side profile, [Shutterstock](https://www.shutterstock.com/search/gmc-yukon)
+or [Dreamstime](https://www.dreamstime.com/photos-images/gmc-yukon.html) are
+worth the licence fee — one good photograph carries the whole page.
 
 ### One honest caveat about stock
 
