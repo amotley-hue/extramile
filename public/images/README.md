@@ -1,79 +1,84 @@
 # Photography
 
-## The one that matters: the vehicle
+## The vehicle
 
-The Vehicle page uses a **full-bleed 21:9 side profile** of a GMC Yukon XL, with
-the name and specifications set beneath it. The home page reuses the same file
-at a 4:3 crop.
+The Vehicle page carries a full-bleed 21:9 frame with the model name and
+figures beneath it. The home page reuses the same file at 4:3.
 
-### What to buy
+### Chosen image
 
-| | |
+> [Black GMC Yukon 2025, side, white background](https://www.shutterstock.com/image-generated/black-gmc-yukon-2025-side-white-2622502777)
+> — Shutterstock `2622502777`
+> (near-duplicate: `2749880289`)
+
+Black, side profile, current body shape, and — the part that matters —
+**commercially licensed**.
+
+### Why not a real photograph
+
+**Almost every genuine photograph of a badged GMC Yukon is licensed "Editorial
+Use Only."** That permits news and commentary and explicitly forbids using the
+image to promote a business, which is precisely what this site does. The
+restriction exists because those shots contain GMC's trademarks with no property
+release, so it is not agency caution you can shop around.
+
+Checked, so nobody has to check again:
+
+| Library | Result |
 | --- | --- |
-| Subject | GMC Yukon XL (extended wheelbase), black |
-| Angle | **Full side profile**, or a shallow three-quarter front at most |
-| Crop | Must survive a **21:9** crop — the car needs to sit low and wide in frame |
-| Resolution | 2400px wide minimum. 3000px+ preferred |
-| Background | Dark, neutral, or a night/urban setting. Avoid pure white studio cut-outs |
-| Lighting | Low, warm, directional. Blue hour or studio-dark |
-| File | Save as `vehicle.jpg`, in this folder |
+| Unsplash | Every Yukon white or tan. The one black "GMC" is a pickup |
+| Pexels | Same — the Charlotte set is all white |
+| Shutterstock | ~1,070 Yukon images, essentially all editorial |
+| Adobe Stock | 76 results, the same editorial photographs |
 
-**The crop is the constraint most stock photos fail.** A Yukon XL is roughly
-three times as long as it is tall, which is why 21:9 suits it. A three-quarter
-front shot — the most common stock framing — cannot be cropped that wide without
-cutting off the nose or slicing the roof. Filter for *side profile* before
-anything else.
+On a Shutterstock "isolated white background" search, 14 of 20 results were
+commercially licensed — and every one of those 14 was a different subject
+entirely (vintage cars, toy planes). The pattern is consistent.
 
-**Avoid white studio backgrounds.** The site is near-black. A cut-out on white
-punches a hole through the page. If the only good image is on white, it needs
-masking onto a dark ground first, which is more work than finding a better shot.
+**AI-generated imagery is the exception.** No real vehicle was photographed, so
+there is no trademark to release. Shutterstock lists these under
+`/image-generated/`, and that is what the chosen image is.
 
-### Where to look
+### Preparing the file
 
-Adobe Stock, Getty, and Shutterstock all carry Yukon XL press and studio
-imagery. GMC's own media site also publishes press photos — check the licence
-terms before using those commercially.
+1. Buy and download at the **largest size offered**.
+2. **Remove the white background** — [remove.bg](https://remove.bg) or
+   Photoshop's *Remove Background*.
+3. Save as **PNG with transparency**.
 
-### Wiring it in
+The transparency is not optional. `vehiclePhotoMode` is set to `"cutout"`, which
+stands the car on the lit brass stage with a contact shadow beneath it rather
+than cropping it to fill the frame. A white-background JPEG renders as a white
+slab on a near-black page.
 
-Download the file anywhere, then run:
+### Installing it
 
 ```bash
-npm run photo -- "C:/Users/you/Downloads/yukon.jpg"
+npm run photo -- "C:/Users/you/Downloads/yukon.png"
 ```
 
-That copies it into place, sets the `vehiclePhoto` constant, and checks the two
-things stock imagery usually gets wrong — not enough resolution, and an aspect
-ratio too tall to survive the 21:9 crop. It tells you if either is a problem
-rather than letting you find out on the page.
+That copies it into place, sets `vehiclePhoto`, and reports anything wrong with
+the resolution or aspect ratio. Then `npm run dev` and open `/vehicle`.
 
-Then `npm run dev` and open `/vehicle` to check where the car sits in the crop.
-
-Doing it by hand is fine too: save as `public/images/vehicle.jpg` and set
+By hand, if you prefer: save to `public/images/vehicle.jpg` and set
 
 ```ts
 export const vehiclePhoto: string | null = "/images/vehicle.jpg";
 ```
 
-Either way the layout does not move — the placeholder and the image occupy
-identical frames, and the darkening and bottom fade are applied automatically.
+Either way the layout does not move — placeholder, cutout, and photograph all
+occupy identical frames.
 
-### Free sources worth trying first
+### If you ever get a real photograph
 
-[Unsplash](https://unsplash.com/s/photos/gmc) and
-[Pexels](https://www.pexels.com/license/) both license for commercial use with
-no attribution required. Selection is thin for a specific trim, so if neither
-has a clean side profile, [Shutterstock](https://www.shutterstock.com/search/gmc-yukon)
-or [Dreamstime](https://www.dreamstime.com/photos-images/gmc-yukon.html) are
-worth the licence fee — one good photograph carries the whole page.
+Set `vehiclePhotoMode` back to `"photo"` and it fills the frame edge to edge
+with a darkening pass and a fade into the page ground. Shoot it at **blue
+hour**, twenty to forty minutes after sunset — black paint at noon reads as a
+rental, the same car at dusk reads as money. Stand well back, shoot level with
+the beltline, and frame much wider than you need; cropping in is free.
 
-### One honest caveat about stock
-
-The site states that the same vehicle arrives on every reservation, and the
-About page builds on that. A stock Yukon will differ from Craig's in colour,
-trim, and wheels. Competitors use stock too, so this is a normal trade — but a
-single evening photographing the actual car at blue hour would beat any stock
-image on this list, cost nothing, and make the claim literally true.
+That would also make the Vehicle page's claim that *the vehicle on this page is
+the one that pulls up* literally true, which no stock or generated image can.
 
 ---
 
@@ -87,11 +92,3 @@ image on this list, cost nothing, and make the claim literally true.
 The About page has a headshot slot wired the same way. `og.jpg` goes in
 `src/app/opengraph-image.jpg` instead, where Next.js picks it up automatically
 with no code change.
-
-## Shooting the real car, if you go that way
-
-- **Blue hour**, twenty to forty minutes after sunset. Black paint at noon reads
-  as a rental; the same car at dusk reads as money.
-- Wash and detail first — the camera finds every water spot.
-- Stand well back and shoot level with the beltline, not down at it.
-- **Shoot much wider than you need.** Cropping in is free; cropping out is not.

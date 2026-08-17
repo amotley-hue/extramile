@@ -164,6 +164,20 @@ export const rateAdjustments = {
  */
 export const vehiclePhoto: string | null = null;
 
+/**
+ * How the image should sit in its frame.
+ *
+ * "photo"  — a real scene. Fills the frame edge to edge, cropped to fit, with a
+ *            slight darkening so bright imagery doesn't punch a hole in a
+ *            near-black page.
+ *
+ * "cutout" — the vehicle on a transparent background. Sits whole on the lit
+ *            stage with a shadow under it, never cropped and never dimmed.
+ *            Requires a PNG with real transparency; a white-background JPEG
+ *            will render as a white slab.
+ */
+export const vehiclePhotoMode: "photo" | "cutout" = "cutout";
+
 /** "Luxury SUV" when no model is set, "Cadillac Escalade" when it is. */
 export function vehicleLabel(): string {
   return vehicle.model.trim() || vehicle.name;
