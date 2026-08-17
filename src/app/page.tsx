@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Phone } from "lucide-react";
 import { ButtonLink, Section, SectionHeading } from "@/components/ui";
+import { VehiclePhoto } from "@/components/vehicle-photo";
 import { airports, business } from "@/lib/business";
 import { vehicle, vehicleFullLabel, vehicleLabel } from "@/lib/rates";
 
@@ -197,37 +198,14 @@ export default function HomePage() {
           <div className="grid gap-16 lg:grid-cols-2 lg:items-center lg:gap-24">
             <div className="reveal">
               {/*
-                Photography slot — /public/images/vehicle.jpg. Until then this
-                is a lit void rather than a grey box with a camera icon in it.
+                Squarer crop than the vehicle page's, because this one sits
+                beside a column of text rather than spanning the page. Same
+                source image; `object-cover` takes the centre of it.
               */}
-              <div className="relative aspect-[5/4] overflow-hidden">
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "radial-gradient(ellipse 80% 70% at 50% 88%, rgb(194 161 92 / 0.3) 0%, transparent 65%)",
-                  }}
-                  aria-hidden
-                />
-                <div
-                  className="absolute inset-0 opacity-[0.05]"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(var(--cream) 1px, transparent 1px), linear-gradient(90deg, var(--cream) 1px, transparent 1px)",
-                    backgroundSize: "64px 64px",
-                    maskImage:
-                      "radial-gradient(ellipse 70% 70% at 50% 50%, #000, transparent 78%)",
-                    WebkitMaskImage:
-                      "radial-gradient(ellipse 70% 70% at 50% 50%, #000, transparent 78%)",
-                  }}
-                  aria-hidden
-                />
-                <div className="absolute inset-x-0 bottom-[14%] flex justify-center">
-                  <span className="font-display text-[2.5rem] font-light italic text-cream/20">
-                    {vehicle.name}
-                  </span>
-                </div>
-              </div>
+              <VehiclePhoto
+                aspect="4 / 3"
+                sizes="(min-width: 64rem) 36rem, 100vw"
+              />
             </div>
 
             <div>

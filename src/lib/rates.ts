@@ -147,6 +147,18 @@ export const rateAdjustments = {
     "Same-day and short-notice trips are priced separately. Call to confirm availability and your rate.",
 } as const;
 
+/**
+ * Path to the vehicle photograph under /public, or null while there isn't one.
+ *
+ * Set this to "/images/vehicle.jpg" the moment the file exists — every place
+ * the car appears switches from the lit-void placeholder to the real image, and
+ * nothing else needs touching. Left null rather than pointing at a missing file,
+ * because a broken image is worse than a deliberate one.
+ *
+ * See public/images/README.md for what to buy and how to crop it.
+ */
+export const vehiclePhoto: string | null = null;
+
 /** "Luxury SUV" when no model is set, "Cadillac Escalade" when it is. */
 export function vehicleLabel(): string {
   return vehicle.model.trim() || vehicle.name;

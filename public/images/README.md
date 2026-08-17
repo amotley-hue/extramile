@@ -1,42 +1,77 @@
 # Photography
 
-The site is designed to look finished without photographs — the hero and
-vehicle panels use layered gradients rather than stock images, because generic
-stock photography of a black car reads as cheaper than no photograph at all.
+## The one that matters: the vehicle
 
-Real photos will still beat it. When Craig has them, here is exactly where they
-go.
+The Vehicle page uses a **full-bleed 21:9 side profile** of a GMC Yukon XL, with
+the name and specifications set beneath it. The home page reuses the same file
+at a 4:3 crop.
 
-## What to shoot
+### What to buy
 
-| File               | Subject                                        | Aspect | Notes |
-| ------------------ | ---------------------------------------------- | ------ | ----- |
-| `hero.jpg`         | A vehicle at night, city or airport behind it   | 16:9   | Shot dark. It sits under a near-black overlay. |
-| `sedan.jpg`        | The sedan, three-quarter front, clean backdrop  | 4:3    | |
-| `suv.jpg`          | The SUV, same angle as the sedan                | 4:3    | Consistency across the three matters more than any single shot. |
-| `sprinter.jpg`     | The Sprinter, same angle                        | 4:3    | |
-| `craig.jpg`        | Craig, waist-up, beside or in front of a vehicle| 4:5    | Suit, natural light, looking at camera. This is the most valuable photo on the list. |
-| `og.jpg`           | Social share card                               | 1200x630 | Vehicle plus the wordmark. |
+| | |
+| --- | --- |
+| Subject | GMC Yukon XL (extended wheelbase), black |
+| Angle | **Full side profile**, or a shallow three-quarter front at most |
+| Crop | Must survive a **21:9** crop — the car needs to sit low and wide in frame |
+| Resolution | 2400px wide minimum. 3000px+ preferred |
+| Background | Dark, neutral, or a night/urban setting. Avoid pure white studio cut-outs |
+| Lighting | Low, warm, directional. Blue hour or studio-dark |
+| File | Save as `vehicle.jpg`, in this folder |
 
-## How to shoot them
+**The crop is the constraint most stock photos fail.** A Yukon XL is roughly
+three times as long as it is tall, which is why 21:9 suits it. A three-quarter
+front shot — the most common stock framing — cannot be cropped that wide without
+cutting off the nose or slicing the roof. Filter for *side profile* before
+anything else.
 
-- **Blue hour**, just after sunset. Chrome and paint look expensive; midday sun
-  makes a black car look like a rental.
-- Wash and detail first. The camera finds every water spot.
-- Shoot wider than you think. Cropping in is free; cropping out is not.
-- A recent phone is fine. A dirty car in good light beats a clean car in bad
-  light, but both is better.
+**Avoid white studio backgrounds.** The site is near-black. A cut-out on white
+punches a hole through the page. If the only good image is on white, it needs
+masking onto a dark ground first, which is more work than finding a better shot.
 
-## Wiring them in
+### Where to look
 
-1. Drop the file in this folder.
-2. Hero: in `src/app/page.tsx`, change `<Backdrop />` to
-   `<Backdrop image="/images/hero.jpg" />`.
-3. Vehicles: in `src/app/fleet/page.tsx`, replace the placeholder panel with
-   `next/image` pointing at `/images/<vehicle.id>.jpg`.
-4. Craig: same swap in `src/app/about/page.tsx`.
-5. Social card: save as `src/app/opengraph-image.jpg` — Next.js picks it up
-   automatically, no code change.
+Adobe Stock, Getty, and Shutterstock all carry Yukon XL press and studio
+imagery. GMC's own media site also publishes press photos — check the licence
+terms before using those commercially.
 
-Use `next/image` rather than a bare `<img>`; it handles sizing and lazy loading,
-and keeps the page fast on a phone at the airport curb.
+### Wiring it in
+
+1. Save the file as `public/images/vehicle.jpg`.
+2. In `src/lib/rates.ts`, change:
+
+   ```ts
+   export const vehiclePhoto: string | null = "/images/vehicle.jpg";
+   ```
+
+That is the whole change. Both pages switch from the placeholder to the
+photograph, the darkening and bottom fade are applied automatically, and the
+layout does not move — the placeholder and the image occupy identical frames.
+
+### One honest caveat about stock
+
+The site states that the same vehicle arrives on every reservation, and the
+About page builds on that. A stock Yukon will differ from Craig's in colour,
+trim, and wheels. Competitors use stock too, so this is a normal trade — but a
+single evening photographing the actual car at blue hour would beat any stock
+image on this list, cost nothing, and make the claim literally true.
+
+---
+
+## Later, if wanted
+
+| File | Subject | Aspect |
+| --- | --- | --- |
+| `craig.jpg` | Craig, waist-up, beside the vehicle | 4:5 |
+| `og.jpg` | Social share card — vehicle plus wordmark | 1200×630 |
+
+The About page has a headshot slot wired the same way. `og.jpg` goes in
+`src/app/opengraph-image.jpg` instead, where Next.js picks it up automatically
+with no code change.
+
+## Shooting the real car, if you go that way
+
+- **Blue hour**, twenty to forty minutes after sunset. Black paint at noon reads
+  as a rental; the same car at dusk reads as money.
+- Wash and detail first — the camera finds every water spot.
+- Stand well back and shoot level with the beltline, not down at it.
+- **Shoot much wider than you need.** Cropping in is free; cropping out is not.

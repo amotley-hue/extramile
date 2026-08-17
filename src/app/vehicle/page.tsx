@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { ButtonLink, Section, SectionHeading } from "@/components/ui";
+import { VehiclePhoto } from "@/components/vehicle-photo";
 import { business } from "@/lib/business";
 import { vehicle, vehicleLabel } from "@/lib/rates";
 
@@ -42,8 +43,8 @@ export default function VehiclePage() {
             </h1>
             <p className="mt-10 max-w-xl text-base leading-[1.75] text-muted md:text-lg">
               A late-model {vehicleLabel()} seating {vehicle.passengers}, with
-              room for {vehicle.luggage} bags. Detailed before every trip,
-              stocked before you ask, and driven by {business.owner} himself.
+              room for {vehicle.luggage} bags. Detailed before every trip and
+              stocked before you ask.
             </p>
           </div>
         </div>
@@ -52,71 +53,49 @@ export default function VehiclePage() {
       <Section className="!pt-8">
         <div className="container-page">
           {/*
-            Photography slot — /public/images/vehicle.jpg, shot at blue hour.
-            See public/images/README.md. Until then this reads as a lit stage
-            rather than a broken image.
+            Full bleed, 21:9. The car is roughly three times as long as it is
+            tall, so a wide frame is the one crop that holds it without dead
+            space above the roof. Drop the file in and set `vehiclePhoto` —
+            see public/images/README.md.
           */}
-          <div className="reveal relative aspect-[16/9] w-full overflow-hidden">
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(ellipse 60% 55% at 50% 92%, rgb(194 161 92 / 0.34) 0%, transparent 62%)",
-              }}
-              aria-hidden
-            />
-            <div
-              className="absolute inset-0 opacity-[0.045]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(var(--cream) 1px, transparent 1px), linear-gradient(90deg, var(--cream) 1px, transparent 1px)",
-                backgroundSize: "88px 88px",
-                maskImage:
-                  "radial-gradient(ellipse 65% 70% at 50% 55%, #000, transparent 80%)",
-                WebkitMaskImage:
-                  "radial-gradient(ellipse 65% 70% at 50% 55%, #000, transparent 80%)",
-              }}
-              aria-hidden
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-display text-[3rem] font-light italic text-cream/15 md:text-[5rem]">
-                {vehicle.name}
-              </span>
-            </div>
+          <div className="reveal">
+            <VehiclePhoto aspect="21 / 9" priority />
+          </div>
+
+          {/* Name and figures sit beneath the image, not over it — type on top
+              of a photograph you haven't seen yet is a bet you lose. */}
+          <div className="reveal mt-10 flex flex-wrap items-end justify-between gap-x-12 gap-y-8 border-b border-line pb-10">
+            <h2 className="font-display text-[2.25rem] font-light leading-none md:text-[3rem]">
+              {vehicle.model.trim() || vehicle.name}
+            </h2>
+            <dl className="flex gap-12">
+              <div>
+                <dt className="text-[0.6875rem] uppercase tracking-[0.2em] text-faint">
+                  Seats
+                </dt>
+                <dd className="mt-2.5 font-display text-3xl font-light text-cream">
+                  {vehicle.passengers}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[0.6875rem] uppercase tracking-[0.2em] text-faint">
+                  Luggage
+                </dt>
+                <dd className="mt-2.5 font-display text-3xl font-light text-cream">
+                  {vehicle.luggage} bags
+                </dd>
+              </div>
+            </dl>
           </div>
 
           <div className="mt-16 grid gap-16 lg:grid-cols-[1fr_1.1fr] lg:gap-24">
-            <div>
-              <dl className="reveal grid grid-cols-2 gap-x-10 gap-y-9">
-                <div>
-                  <dt className="text-[0.6875rem] uppercase tracking-[0.2em] text-faint">
-                    Seats
-                  </dt>
-                  <dd className="mt-2.5 font-display text-3xl font-light text-cream">
-                    {vehicle.passengers}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-[0.6875rem] uppercase tracking-[0.2em] text-faint">
-                    Luggage
-                  </dt>
-                  <dd className="mt-2.5 font-display text-3xl font-light text-cream">
-                    {vehicle.luggage} bags
-                  </dd>
-                </div>
-                {/* Only worth a row once Craig gives us the actual model —
-                    otherwise it just repeats the heading above. */}
-                {vehicle.model.trim() ? (
-                  <div className="col-span-2">
-                    <dt className="text-[0.6875rem] uppercase tracking-[0.2em] text-faint">
-                      Vehicle
-                    </dt>
-                    <dd className="mt-2.5 font-display text-2xl font-light text-cream">
-                      {vehicle.model}
-                    </dd>
-                  </div>
-                ) : null}
-              </dl>
+            <div className="reveal">
+              <p className="eyebrow mb-7">The car</p>
+              <p className="text-[15px] leading-[1.8] text-muted">
+                Full-size, extended wheelbase. Room for {vehicle.passengers} and
+                their luggage without anyone negotiating for legroom, and quiet
+                enough at speed to take a call from the back seat.
+              </p>
             </div>
 
             <div className="reveal">
